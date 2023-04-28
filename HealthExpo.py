@@ -128,7 +128,7 @@ def log_info_format():
 def record(patient_num, new_patient):
     '''Puts patients in line, records information into csv, links the patient number to the patient list'''
 
-    record_patients_data = pandas.read_csv("record_patients.csv")
+    record_patients_data = pandas.read_csv(os.path.join("Databases", "record_patients.csv"))
     print("permanent saving")
     new_dict = {
         "patient_num": [patient_num],
@@ -143,7 +143,7 @@ def record(patient_num, new_patient):
     new_data = pandas.DataFrame(new_dict)
     modified_data = pandas.concat([record_patients_data, new_data], ignore_index=True, join="inner")
     print(modified_data)
-    modified_data.to_csv("record_patients.csv", index=False)
+    modified_data.to_csv(os.path.join("Databases", "record_patients.csv"), index=False)
 
     sorted_services = sort_the_lines()
 
@@ -244,16 +244,17 @@ def kick_out():
 
     # check if I chose one service to take out of AND check if the number I typed in matches the first in line
     if line_to_be_edited.get() != '' and to_be_SC_entry.get() == data[0]:
-        mixer.music.load("notification_sound2.mp3")
-        mixer.music.play(loops=0)
 
         data.pop(0)
 
-        with open(os.path.join("Lines", f"{line_to_be_edited.get()}.txt", 'w')) as update_file:
+        with open(os.path.join("Lines", f"{line_to_be_edited.get()}.txt"), 'w') as update_file:
             ready_to_write = ' '.join(data) + ' '
             update_file.write(ready_to_write)
 
         re_enter(int(to_be_SC_entry.get()))
+
+        mixer.music.load(os.path.join("Assets", "notification_sound2.mp3"))
+        mixer.music.play(loops=0)
 
     else:
         messagebox.showwarning(title="Oops", message="It looks like you either:\ndid not choose a service to edit"
@@ -285,7 +286,7 @@ def re_enter(patient_num):
                 sliced_list.sort()
                 sliced_list.insert(0, xlist[0])
 
-            with open(os.path.join("Lines", f"{service}.txt", 'w')) as file:
+            with open(os.path.join("Lines", f"{service}.txt"), 'w') as file:
                 ready_to_go = ' '.join(sliced_list) + ' '
                 file.write(ready_to_go)
 

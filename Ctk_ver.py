@@ -44,8 +44,8 @@ def testing_bot():
                                'Marvin', 'Melvin', 'Kyle', 'Kendell', 'Ava', 'Amanda', 'Archie', 'Bo', 'Bob', 'Braden',
                                'Brantley', 'Carter', 'Cam', 'Carly'])
 
-    rand_address = random.choice(["afds", "qwer", "a;lsdkfjas;dlfkjas;d", "address road", "james road", "john road",
-                                  "brantley road", "Johnathan road", "kingston pike", "Hardin valley", "ava road",
+    rand_address = random.choice(["Candy Road", "Walnut Creek road", "my address", "address road", "james road", "john road",
+                                  "brantley road", "Johnathan road", "king road", "Violet road", "ava road",
                                   "taylor road", "Oakwood drive", "jamie road", "arkansas road"])
 
     rand_phone = ''.join([str(num) for num in random.choices(list(range(10)), k=10)])
