@@ -231,7 +231,7 @@ def kick_out():
         data = selected_file.read()
         data = data.split()
 
-    # check if I chose one service to take out of AND check if the number I typed in matches the first in line
+    # check if user chose one service to take out of AND check if the number user typed in matches the first in line
     if line_to_be_edited.get() != '' and to_be_SC_entry.get() == data[0]:
 
         data.pop(0)
@@ -290,16 +290,12 @@ def re_enter(patient_num):
         else:
             check_if_finished_three += 1
 
-    # this is going to check of the patient is done with every service they wanted
-    # don't need this though, but it would be nice to know (just in case?)
-    if check_if_finished_three == 3:
-        print(f"This patient is finished -> {patient}")
-
-    print("ok")
+    # if check_if_finished_three == 3:
+    #     print(f"This patient is finished -> {patient}")
 
 
 def scraper():
-    """Scrapes all the information from {service}.txt files||||| This is the only function for linewindow"""
+    """Scrapes all the information from {service}.txt files, the only function for linewindow"""
     global dent_line_mark
     global ment_line_mark
     global orient_line_mark
@@ -318,7 +314,7 @@ def scraper():
                 orient_line_mark.set(new_patient_str)
 
 
-################# UI #####################
+#                    UI                 #
 ctk.set_appearance_mode("System")
 ctk.set_default_color_theme("dark-blue")
 manager_win = ctk.CTk()
@@ -369,7 +365,7 @@ phone_entry.grid(column=0, row=3, sticky=EW)
 address_entry = ctk.CTkEntry(master=log_tab, fg_color=color2, text_color = BLACK, font=FONT)
 address_entry.grid(column=0, row=5, sticky=EW)
 
-# right side of log tab
+# choosing services on log tab
 dental_button = ctk.CTkCheckBox(master=log_tab, text="Dental", variable=dental_checked, font=FONT)
 dental_button.grid(column=1, row=1, sticky=E)
 mental_button = ctk.CTkCheckBox(master=log_tab, text="Mental", variable=mental_checked, font=FONT)
@@ -385,7 +381,7 @@ log_submit_button = ctk.CTkButton(master=log_tab, text="Submit", command=log_inf
 # add teh command for this button
 log_submit_button.grid(column=1, row=7)
 
-############### sc configs #########
+#               sc configs                #
 SC_tab = tabs.tab("Status Change")
 
 deploy_line_win_button = ctk.CTkButton(master=SC_tab, text="Line Window", command=deploy_line_window, font=FONT)

@@ -12,3 +12,9 @@ Things/Tips I learned while making this project:
 ## Data Organization
 Saving the permanent data will be done in the .csv file
 defining patients = {} and locating for entering lines will be saved in the json
+
+## Future Ideas?
+Log File? <br>
+CLI tool to reset databases, index file, lines <br>
+auto update line window <br>
+reset SC window inputs after "Submit" button pressed <br>
