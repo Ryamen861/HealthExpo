@@ -1,15 +1,14 @@
 from tkinter import *
-import tkinter
 from tkinter import messagebox
 import customtkinter as ctk
 
 from pygame import mixer
+from PIL import ImageTk
 import json
 import pandas
 
 import os
 import random
-import time
 
 color1 = "#6E85B7"
 color2 = "#B2C8DF"
@@ -17,8 +16,6 @@ color3 = "#C4D7E0"
 color4 = "#F8F9D7"
 BLACK = "#000505"
 FONT = ("arial", 16)
-
-
 
 with open(os.path.join("Lines", "index.txt")) as assign_index:
     patient_num_assign = int(assign_index.read())
@@ -335,6 +332,8 @@ ctk.set_default_color_theme("dark-blue")
 manager_win = ctk.CTk()
 manager_win.title("Health Expo")
 manager_win.geometry("1200x500")
+icon_photo = PhotoImage(os.path.join("Assets", "icon.ico"))
+manager_win.iconbitmap(True, icon_photo)
 # below is making the app resizeable
 manager_win.resizable(True, True)
 # True -> Width, True-> Height
