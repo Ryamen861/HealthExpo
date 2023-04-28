@@ -1,5 +1,5 @@
 from tkinter import *
-from tkinter import ttk
+import tkinter
 from tkinter import messagebox
 import customtkinter as ctk
 
@@ -353,75 +353,72 @@ dent_line_mark = ctk.StringVar()
 ment_line_mark = ctk.StringVar()
 orient_line_mark = ctk.StringVar()
 
-tabs = ctk.CTkTabview(master=win, width=1200)
+tabs = ctk.CTkTabview(master=manager_win, width=1400)
 tabs.grid()
 tabs.add("Log")
 tabs.add("Status Change")
 tabs.set("Log")
+log_tab = tabs.tab("Log")
 
-# mylabel = ctk.CTkLabel(master=tabs.tab("Log"), text="Enter your entry!")
-# mylabel.place(relx = 1, rely = 0.2, anchor=tkinter.CENTER)
-
-name_label = ctk.CTkLabel(log_frame, text="Name", font=FONT)
+name_label = ctk.CTkLabel(master=log_tab, text="Name", font=FONT)
 name_label.grid(column=0, row=0, sticky=EW)
-name_label.configure(pady=20)
-phone_label = ctk.CTkLabel(log_frame, text="Phone #", font=FONT)
+name_label.configure(pady = 20)
+phone_label = ctk.CTkLabel(master=log_tab, text="Phone #", font=FONT)
 phone_label.grid(column=0, row=2, sticky=EW)
 phone_label.configure(pady=20)
-address_label = ctk.CTkLabel(log_frame, text="Address", font=FONT)
+address_label = ctk.CTkLabel(master=log_tab, text="Address", font=FONT)
 address_label.grid(column=0, row=4, sticky=EW)
 address_label.configure(pady=20)
 
-name_entry = ctk.CTkEntry(log_frame, fg_color=color2, text_color = BLACK, font=FONT)
+name_entry = ctk.CTkEntry(master=log_tab, fg_color=color2, text_color = BLACK, font=FONT)
 name_entry.grid(column=0, row=1, sticky=EW)
-phone_entry = ctk.CTkEntry(log_frame, fg_color=color2, text_color = BLACK, font=FONT)
+phone_entry = ctk.CTkEntry(master=log_tab, fg_color=color2, text_color = BLACK, font=FONT)
 phone_entry.grid(column=0, row=3, sticky=EW)
-address_entry = ctk.CTkEntry(log_frame, fg_color=color2, text_color = BLACK, font=FONT)
+address_entry = ctk.CTkEntry(master=log_tab, fg_color=color2, text_color = BLACK, font=FONT)
 address_entry.grid(column=0, row=5, sticky=EW)
 
 # right side of log tab
-dental_button = ctk.CTkCheckBox(log_frame, text="Dental", variable=dental_checked, font=FONT)
+dental_button = ctk.CTkCheckBox(master=log_tab, text="Dental", variable=dental_checked, font=FONT)
 dental_button.grid(column=1, row=1, sticky=E)
-mental_button = ctk.CTkCheckBox(log_frame, text="Mental", variable=mental_checked, font=FONT)
+mental_button = ctk.CTkCheckBox(master=log_tab, text="Mental", variable=mental_checked, font=FONT)
 mental_button.grid(column=1, row=3, sticky=E)
-oriental_button = ctk.CTkCheckBox(log_frame, text="Oriental", variable=oriental_checked, font=FONT)
+oriental_button = ctk.CTkCheckBox(master=log_tab, text="Oriental", variable=oriental_checked, font=FONT)
 oriental_button.grid(column=1, row=5, sticky=E)
 
-counter_label = ctk.CTkLabel(log_frame, text=patient_num_assign, font=FONT)
+counter_label = ctk.CTkLabel(master=log_tab, text=patient_num_assign, font=FONT)
 counter_label.grid(column=1, row=6)
 counter_label.configure(pady=20)
 
-deploy_line_win_button = ctk.CTkButton(sc_frame, text="Line Window", command=deploy_line_window, font=FONT)
-deploy_line_win_button.grid(column=1, row=7, sticky="ES")
-
-log_submit_button = ctk.CTkButton(log_frame, text="Submit", command=log_info_format, font=FONT, height=40)
+log_submit_button = ctk.CTkButton(master=log_tab, text="Submit", command=log_info_format, font=FONT, height=40)
 # add teh command for this button
 log_submit_button.grid(column=1, row=7)
 
 ############### sc configs #########
-sc_frame.pack(fill=BOTH, expand=1)
-my_notebook.add(sc_frame, text="Status Change")
+SC_tab = tabs.tab("Status Change")
 
-patient_num_label = ctk.CTkLabel(sc_frame, text="Patient Num", font=FONT)
+deploy_line_win_button = ctk.CTkButton(master=SC_tab, text="Line Window", command=deploy_line_window, font=FONT)
+deploy_line_win_button.grid(column=1, row=7, sticky="ES")
+
+patient_num_label = ctk.CTkLabel(master=SC_tab, text="Patient Num", font=FONT)
 patient_num_label.grid(column=0, row=0)
 
-to_be_SC_entry = ctk.CTkEntry(sc_frame, font=FONT)
+to_be_SC_entry = ctk.CTkEntry(master=SC_tab, font=FONT)
 to_be_SC_entry.grid(column=0, row=1)
 
-key_entry = ctk.CTkEntry(sc_frame, font=FONT)
+key_entry = ctk.CTkEntry(master=SC_tab, font=FONT)
 key_entry.grid(column=0, row=2)
 
-confirm_button = ctk.CTkCheckBox(sc_frame, text="Confirm", variable=confirm_checked, font=FONT)
+confirm_button = ctk.CTkCheckBox(master=SC_tab, text="Confirm", variable=confirm_checked, font=FONT)
 confirm_button.grid(column=0, row=3)
 
-sc_submit_button = ctk.CTkButton(sc_frame, text="Submit", command=kick_out_plus_lw, font=FONT)
+sc_submit_button = ctk.CTkButton(master=SC_tab, text="Submit", command=kick_out_plus_lw, font=FONT)
 sc_submit_button.grid(column=0, row=4)
 
-sc_dental_button = ctk.CTkRadioButton(sc_frame, text="Dental", variable=line_to_be_edited, value='dental', font=FONT)
+sc_dental_button = ctk.CTkRadioButton(master=SC_tab, text="Dental", variable=line_to_be_edited, value='dental', font=FONT)
 sc_dental_button.grid(column=1, row=0)
-sc_mental_button = ctk.CTkRadioButton(sc_frame, text="Mental", variable=line_to_be_edited, value='mental', font=FONT)
+sc_mental_button = ctk.CTkRadioButton(master=SC_tab, text="Mental", variable=line_to_be_edited, value='mental', font=FONT)
 sc_mental_button.grid(column=1, row=1)
-sc_oriental_button = ctk.CTkRadioButton(sc_frame, text="Oriental", variable=line_to_be_edited, value='oriental', font=FONT)
+sc_oriental_button = ctk.CTkRadioButton(master=SC_tab, text="Oriental", variable=line_to_be_edited, value='oriental', font=FONT)
 sc_oriental_button.grid(column=1, row=2)
 
 testing_bot()
