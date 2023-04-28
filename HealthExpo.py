@@ -3,7 +3,6 @@ from tkinter import messagebox
 import customtkinter as ctk
 
 from pygame import mixer
-from PIL import ImageTk
 import json
 import pandas
 
@@ -27,13 +26,6 @@ the_key = "key"
 first_time = True
 
 ################# FUNCTIONALITY ##################
-
-# def show_line_window(self):
-#     self.lines_Window = QtWidgets.QMainWindow()
-#     self.Lui = Ui_Line_Window()
-#     self.Lui.setupUi(self.lines_Window)
-#     self.lines_Window.show()
-
 
 def testing_bot():
     rand_name = random.choice(['John', 'Mary', 'Jerry', 'James', 'Matthew', 'Mark', 'Luke', 'John', 'Daniel', 'Ezekiel',
