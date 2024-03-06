@@ -57,7 +57,8 @@ def deploy_line_window():
 
         lw = ctk.CTkToplevel()
         lw.title("Line Window")
-        lw.geometry("500x700")
+        lw.iconbitmap(True, icon_photo)
+        lw.geometry("500x500")
 
         dental_line = ctk.CTkLabel(lw, textvariable=dent_line_mark, font=FONT)
         dental_line.grid(column=0, row=1, sticky="N")
@@ -211,7 +212,6 @@ def clear_inputs():
     # for the SC
     confirm_button.deselect()
     to_be_SC_entry.delete(0, END)
-    key_entry.delete(0, END)
 
 
 def tick_counter():
@@ -319,7 +319,7 @@ ctk.set_appearance_mode("System")
 ctk.set_default_color_theme("dark-blue")
 manager_win = ctk.CTk()
 manager_win.title("Health Expo")
-manager_win.geometry("1200x500")
+manager_win.geometry("700x375")
 icon_photo = PhotoImage(os.path.join("Assets", "icon.ico"))
 manager_win.iconbitmap(True, icon_photo)
 # below is making the app resizeable
@@ -341,7 +341,7 @@ dent_line_mark = ctk.StringVar()
 ment_line_mark = ctk.StringVar()
 orient_line_mark = ctk.StringVar()
 
-tabs = ctk.CTkTabview(master=manager_win, width=1400)
+tabs = ctk.CTkTabview(master=manager_win, width=700)
 tabs.grid()
 tabs.add("Log")
 tabs.add("Status Change")
@@ -385,29 +385,29 @@ log_submit_button.grid(column=1, row=7)
 SC_tab = tabs.tab("Status Change")
 
 deploy_line_win_button = ctk.CTkButton(master=SC_tab, text="Line Window", command=deploy_line_window, font=FONT)
-deploy_line_win_button.grid(column=1, row=7, sticky="ES")
+deploy_line_win_button.grid(column=2, row=7, sticky="ES")
 
 patient_num_label = ctk.CTkLabel(master=SC_tab, text="Patient Num", font=FONT)
-patient_num_label.grid(column=0, row=0)
+patient_num_label.grid(column=0, row=0, padx=(180, 10))
 
 to_be_SC_entry = ctk.CTkEntry(master=SC_tab, font=FONT)
-to_be_SC_entry.grid(column=0, row=1)
-
-key_entry = ctk.CTkEntry(master=SC_tab, font=FONT)
-key_entry.grid(column=0, row=2)
+to_be_SC_entry.grid(column=0, row=1, padx=(180, 10))
 
 confirm_button = ctk.CTkCheckBox(master=SC_tab, text="Confirm", variable=confirm_checked, font=FONT)
-confirm_button.grid(column=0, row=3)
+confirm_button.grid(column=0, row=3, padx=(180, 10), pady=(0, 10))
 
 sc_submit_button = ctk.CTkButton(master=SC_tab, text="Submit", command=kick_out_plus_lw, font=FONT)
-sc_submit_button.grid(column=0, row=4)
+sc_submit_button.grid(column=0, row=4, padx=(180, 10))
+
+padding_text = ctk.CTkLabel(master=SC_tab, text="    ", font=FONT)
+padding_text.grid(column=1, row=5)
 
 sc_dental_button = ctk.CTkRadioButton(master=SC_tab, text="Dental", variable=line_to_be_edited, value='dental', font=FONT)
-sc_dental_button.grid(column=1, row=0)
+sc_dental_button.grid(column=2, row=0)
 sc_mental_button = ctk.CTkRadioButton(master=SC_tab, text="Mental", variable=line_to_be_edited, value='mental', font=FONT)
-sc_mental_button.grid(column=1, row=1)
+sc_mental_button.grid(column=2, row=1)
 sc_oriental_button = ctk.CTkRadioButton(master=SC_tab, text="Oriental", variable=line_to_be_edited, value='oriental', font=FONT)
-sc_oriental_button.grid(column=1, row=2)
+sc_oriental_button.grid(column=2, row=2)
 
 testing_bot()
 
