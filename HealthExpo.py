@@ -64,19 +64,19 @@ def deploy_line_window():
         dental_line.grid(column=0, row=1, sticky="N")
 
         dental_label = ctk.CTkLabel(lw, text="Dental", font=FONT)
-        dental_label.grid(column=0, row=0, sticky="N")
+        dental_label.grid(column=0, row=0, padx=(60, 60))
 
         mental_line = ctk.CTkLabel(lw, textvariable=ment_line_mark, font=FONT)
         mental_line.grid(column=1, row=1, sticky="N")
 
         mental_label = ctk.CTkLabel(lw, text="Mental", font=FONT)
-        mental_label.grid(column=1, row=0)
+        mental_label.grid(column=1, row=0, padx=(60, 60))
 
         oriental_line = ctk.CTkLabel(lw, textvariable=orient_line_mark, font=FONT)
         oriental_line.grid(column=2, row=1)
 
         oriental_label = ctk.CTkLabel(lw, text="Oriental", font=FONT)
-        oriental_label.grid(column=2, row=0)
+        oriental_label.grid(column=2, row=0, padx=(60, 60))
 
         lw.mainloop()
 
