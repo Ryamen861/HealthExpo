@@ -108,7 +108,8 @@ def log_info_format():
         else:
             new_patient.append(" ")
 
-        print(new_patient)
+        # update line window to have new patient included in lines
+        deploy_line_window()
 
         record(patient_num_assign, new_patient)
 
