@@ -23,34 +23,38 @@ with open(os.path.join("Lines", "index.txt")) as assign_index:
 mixer.init()
 
 the_key = "key"
-first_time = True
 
-dental_line = []
-oriental_line = []
-eye_line = []
-fm_line = []
-internal_line = []
-
-class HealthExpo(ctk):
+class HealthExpo():
     def __init__(self):
+        self.first_time = True
+
         #                    UI                 #
-        self.ctk.set_appearance_mode("System")
-        self.ctk.set_default_color_theme("dark-blue")
-        self.title("Health Expo")
-        self.geometry("700x375")
+        self.home = ctk.CTk()
+        ctk.set_appearance_mode("System")
+        ctk.set_default_color_theme("dark-blue")
+        self.home.title("Health Expo")
+        self.home.geometry("700x375")
         icon_photo = PhotoImage(os.path.join("Assets", "icon.ico"))
-        self.iconbitmap(True, icon_photo)
-        self.resizable(True, True)
+        self.home.iconbitmap(True, icon_photo)
+        self.home.resizable(True, True)
         # True -> Width, True-> Height
+
+        self.dental_line = []
+        self.oriental_line = []
+        self.eye_line = []
+        self.fm_line = []
+        self.internal_line = []
 
         # sc_frame variables
         self.confirm_checked = ctk.BooleanVar()
         self.line_to_be_edited = ctk.StringVar()
 
-        # log_frame variables
+        # log_frame variables (do we even need them as ctk vars?)
         self.dental_checked = ctk.BooleanVar()
         self.eye_checked = ctk.BooleanVar()
         self.oriental_checked = ctk.BooleanVar()
+        self.fm_checked = ctk.BooleanVar()
+        self.internal_checked = ctk.BooleanVar()
         self.counter_tick_up = ctk.IntVar()
 
         # These variables are for the Line Window
@@ -59,7 +63,7 @@ class HealthExpo(ctk):
         self.oriental_line_text = ctk.StringVar()
         self.internal_line_text = ctk.StringVar()
 
-        tabs = ctk.CTkTabview(master=self, width=700)
+        tabs = ctk.CTkTabview(master=self.home, width=700)
         tabs.grid()
         tabs.add("Log")
         tabs.add("Status Change")
@@ -80,8 +84,10 @@ class HealthExpo(ctk):
         self.eye_button.grid(column=1, row=3, sticky=E)
         self.oriental_button = ctk.CTkCheckBox(master=log_tab, text="Oriental", variable=self.oriental_checked, font=FONT)
         self.oriental_button.grid(column=1, row=5, sticky=E)
-        self.internal_button = ctk.CTkCheckBox(master=log_tab, text="Internal", variable=self.oriental_checked, font=FONT)
-        self.internal_button.grid(column=1, row=5, sticky=E)
+        self.internal_button = ctk.CTkCheckBox(master=log_tab, text="Internal", variable=self.internal_checked, font=FONT)
+        self.internal_button.grid(column=1, row=7, sticky=E)
+        self.fm_button = ctk.CTkCheckBox(master=log_tab, text="Foot Massage", variable=self.fm_checked, font=FONT)
+        self.fm_button.grid(column=1, row=9, sticky=E)
 
         self.counter_label = ctk.CTkLabel(master=log_tab, text=patient_num_assign, font=FONT)
         self.counter_label.grid(column=1, row=6)
@@ -112,22 +118,23 @@ class HealthExpo(ctk):
         self.padding_text = ctk.CTkLabel(master=self.SC_tab, text="    ", font=FONT)
         self.padding_text.grid(column=1, row=5)
 
-        self.sc_dental_button = ctk.CTkRadioButton(master=self.SC_tab, text="Dental", variable=line_to_be_edited, value='dental', font=FONT)
+        self.sc_dental_button = ctk.CTkRadioButton(master=self.SC_tab, text="Dental", variable=self.line_to_be_edited, value='dental', font=FONT)
         self.sc_dental_button.grid(column=2, row=0)
-        self.sc_eye_button = ctk.CTkRadioButton(master=self.SC_tab, text="Eye", variable=line_to_be_edited, value='eye', font=FONT)
+        self.sc_eye_button = ctk.CTkRadioButton(master=self.SC_tab, text="Eye", variable=self.line_to_be_edited, value='eye', font=FONT)
         self.sc_eye_button.grid(column=2, row=1)
-        self.sc_oriental_button = ctk.CTkRadioButton(master=self.SC_tab, text="Oriental", variable=line_to_be_edited, value='oriental', font=FONT)
+        self.sc_oriental_button = ctk.CTkRadioButton(master=self.SC_tab, text="Oriental", variable=self.line_to_be_edited, value='oriental', font=FONT)
         self.sc_oriental_button.grid(column=2, row=2)
-        self.sc_internal_button = ctk.CTkRadioButton(master=self.SC_tab, text="Oriental", variable=line_to_be_edited, value='oriental', font=FONT)
+        self.sc_internal_button = ctk.CTkRadioButton(master=self.SC_tab, text="Oriental", variable=self.line_to_be_edited, value='oriental', font=FONT)
         self.sc_internal_button.grid(column=2, row=3)
 
         self.testing_bot()
 
-        self.mainloop()
+        self.home.mainloop()
     
     ################# FUNCTIONALITY ##################
 
     def testing_bot(self):
+        """Just for testing purposes, comment out this method when in production"""
         rand_name = random.choice(['John', 'Mary', 'Jerry', 'James', 'Matthew', 'Mark', 'Luke', 'John', 'Daniel', 'Ezekiel',
                                 'Esther', 'Melchizideck', 'Solomon', 'David', 'Moses', 'Jacob', 'Esau', 'Joseph',
                                 'Marvin', 'Melvin', 'Kyle', 'Kendell', 'Ava', 'Amanda', 'Archie', 'Bo', 'Bob', 'Braden',
@@ -140,9 +147,6 @@ class HealthExpo(ctk):
         rand_phone = ''.join([str(num) for num in random.choices(list(range(10)), k=10)])
 
         self.name_entry.insert(0, rand_name)
-        self.address_entry.insert(0, rand_address)
-        self.phone_entry.insert(0, rand_phone)
-
 
     def kick_out_plus_lw(self):
         self.kick_out()
@@ -194,131 +198,119 @@ class HealthExpo(ctk):
 
 
     def log_info_format(self):
-        """checks all information put in by the log_tab, formats it"""
+        """verify inputs of log_tab, formats it"""
         if self.name_entry.get() == "":
             messagebox.showwarning(title="Empty Entries", message="Looks like you have not filled out the name entry")
 
-        elif not self.dental_checked.get() and not self.eye_checked.get() and not self.oriental_checked.get() and not self.internal_checked.get():
+        elif not self.dental_checked.get() and not self.eye_checked.get() and not self.oriental_checked.get() and not self.internal_checked.get() and not self.fm_checked.get():
             messagebox.showwarning(title="Empty Services", message="Looks like you have not filled out any Services")
 
         else:
-            new_patient = [patient_num_assign, self.name_entry.get()]
+            new_patient = {
+                "id": patient_num_assign,
+                "name": self.name_entry.get(),
+            }
 
             # add services here
             if self.dental_checked.get():
-                new_patient.append('Dental')
+                new_patient["Dental"] = 1
             else:
-                new_patient.append(" ")
+                new_patient["Dental"] = 0
 
             if self.eye_checked.get():
-                new_patient.append("Eye")
+                new_patient["Eye"] = 1
             else:
-                new_patient.append(" ")
+                new_patient["Eye"] = 0
 
             if self.oriental_checked.get():
-                new_patient.append("Oriental")
+                new_patient["Oriental"] = 1
             else:
-                new_patient.append(" ")
+                new_patient["Oriental"] = 0
 
             if self.internal_checked.get():
-                new_patient.append("Internal")
+                new_patient["Internal"] = 1
             else:
-                new_patient.append(" ")
+                new_patient["Internal"] = 0
             
             if self.fm_checked.get():
-                new_patient.append("Fm")
-            else:
-                new_patient.append(" ")
+                new_patient["Fm"] = 1
+            else:   
+                new_patient["Fm"] = 0
 
-            self.record(patient_num_assign, new_patient)
-
+            self.liner(new_patient, patient_num_assign)
+            self.record(new_patient)
             # update line window to have new patient included in lines
             self.deploy_line_window()
 
+            self.tick_counter()
+            self.clear_inputs()
+
             self.testing_bot()
 
-
-    def record(self, patient_num, new_patient):
-        '''Puts patients in line, records information into csv, links the patient number to the patient list'''
-
-        record_patients_data = pandas.read_csv(os.path.join("Databases", "record_patients.csv"))
-        print("permanent saving")
-        new_dict = {
-            "patient_num": [patient_num],
-            "name": [new_patient[1]],
-            "phone": [new_patient[2]],
-            "address": [new_patient[3]],
-            "dental": [new_patient[4]],
-            "eye": [new_patient[5]],
-            "oriental": [new_patient[6]],
-            "internal": [new_patient[7]],
-            "foot massage": [new_patient[8]],
-        }
-
-        new_data = pandas.DataFrame(new_dict)
-        modified_data = pandas.concat([record_patients_data, new_data], ignore_index=True, join="inner")
-        print(modified_data)
-        modified_data.to_csv(os.path.join("Databases", "record_patients.csv"), index=False)
-
+    def liner(self, new_patient, id):
         sorted_services = self.sort_the_lines()
 
         for service in sorted_services:
             # service is a service in string form
-            if service in new_patient:
-                print(f"we found it,{service}, we will write in it now")
-                self.write_in_a_file(service, patient_num)
+            if new_patient[service] == 1:
+                match service:
+                    case "Dental":
+                        self.dental_line.append(id)
+                    case "Oriental":
+                        self.oriental_line.append(id)
+                    case "Eye":
+                        self.eye_line.append(id)
+                    case "Internal":
+                        self.internal_line.append(id)
+                    case "Fm":
+                        self.fm_line.append(id)
+
                 # mark that service so we don't run into it again in self.re_enter()
-                the_service_index = new_patient.index(service)
-                new_patient[the_service_index] = service + 'x'
-                print(new_patient)
+                new_patient[service] = 0
                 break
             else:
                 print('found no match')
 
-        # add this information to the json file
-        new_data = {patient_num: new_patient}
+
+    def record(self, new_patient):
+        '''Puts patients in line, records information into csv, links the patient number to the patient list'''
+
+        record_patients_data = pandas.read_csv(os.path.join("Databases", "record_patients.csv"))
+        new_data = pandas.DataFrame(new_patient)
+        modified_data = pandas.concat([record_patients_data, new_data], ignore_index=True, join="inner")
+        modified_data.to_csv(os.path.join("Databases", "record_patients.csv"), index=False)
+
+        # add this information to the json file (WHY are we adding it to the JSON file?)
         with open(os.path.join("Databases", "patients.json")) as file:
             data = json.load(file)
-        data.update(new_data)
+        data.update(new_patient)
         with open(os.path.join("Databases", "patients.json"), 'w') as file:
             json.dump(data, file, indent=4)
-
-        self.tick_counter()
-        self.clear_inputs()
 
 
     def sort_the_lines(self):
         """looks at the lengths of each medical line. returns a list of smallest to largest"""
-        # this is a sub thing to self.record()
+        lengths = {
+            "Dental": len(self.dental_line),
+            "Oriental": len(self.oriental_line),
+            "Eye": len(self.eye_line),
+            "Fm": len(self.fm_line),
+            "Internal": len(self.internal_line),
+        }
+        sorted_list = []
 
-        # read all the lines, defines lengths
-        with open(os.path.join("Lines", "Dental.txt")) as d_file:
-            d_line_len = len(d_file.read().split())
-            # self.d_line_len is a integer that defines the length of the dental line
-
-        with open(os.path.join("Lines", "Eye.txt")) as m_file:
-            m_line_len = len(m_file.read().split())
-
-        with open(os.path.join("Lines", "Oriental.txt")) as o_file:
-            o_line_len = len(o_file.read().split())
+        # I'm pretty proud of this one
+        biggest = 0
+        for k, v in lengths:
+            if v >= biggest:
+                sorted_list.insert(0, k)
+                biggest = v
+            else:
+                sorted_list.append(k)
         
-        with open(os.path.join("Lines", "Internal.txt")) as i_file:
-            i_line_len = len(i_file.read().split())
+        sorted_list = sorted_list.reverse()
 
-        line_lengths_list = [[d_line_len, "Dental"], [m_line_len, "Eye"], [o_line_len, "Oriental"]]
-
-        x_list = [d_line_len, o_line_len, m_line_len]
-        x_list.sort()
-        y_list = []
-        for length in x_list:
-            for pair in line_lengths_list:
-                if pair[0] == length:
-                    y_list.append(pair[1])
-                    line_lengths_list.remove(pair)
-        # will tuple unpacking work here? learn tuple unpacking
-
-        # x_list is a list of services, the first is the shortest line, the last is the longest line
-        return y_list
+        return sorted_list # which has the shortest line first, longest line last
 
 
     def write_in_a_file(service, patient_num):
@@ -353,18 +345,17 @@ class HealthExpo(ctk):
 
     def kick_out(self):
         '''takes the first one in a specified line out'''
-        global line_to_be_edited
 
-        with open(os.path.join("Lines", f"{line_to_be_edited.get()}.txt")) as selected_file:
+        with open(os.path.join("Lines", f"{self.line_to_be_edited.get()}.txt")) as selected_file:
             data = selected_file.read()
             data = data.split()
 
         # check if user chose one service to take out of AND check if the number user typed in matches the first in line
-        if line_to_be_edited.get() != '' and self.to_be_SC_entry.get() == data[0]:
+        if self.line_to_be_edited.get() != '' and self.to_be_SC_entry.get() == data[0]:
 
             data.pop(0)
 
-            with open(os.path.join("Lines", f"{line_to_be_edited.get()}.txt"), 'w') as update_file:
+            with open(os.path.join("Lines", f"{self.line_to_be_edited.get()}.txt"), 'w') as update_file:
                 ready_to_write = ' '.join(data) + ' '
                 update_file.write(ready_to_write)
 
