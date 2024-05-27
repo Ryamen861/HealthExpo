@@ -117,15 +117,15 @@ class HealthExpo():
         self.sc_submit_button.grid(column=0, row=3, padx=(120, 30))
 
         self.sc_dental_button = ctk.CTkRadioButton(master=self.SC_tab, text="Dental", variable=self.line_to_be_edited, value='dental', font=FONT)
-        self.sc_dental_button.grid(column=2, row=0, padx=20, pady=20)
+        self.sc_dental_button.grid(column=2, row=0, padx=20, pady=20, sticky=W)
         self.sc_eye_button = ctk.CTkRadioButton(master=self.SC_tab, text="Eye", variable=self.line_to_be_edited, value='eye', font=FONT)
-        self.sc_eye_button.grid(column=2, row=1, padx=20, pady=20)
+        self.sc_eye_button.grid(column=2, row=1, padx=20, pady=20, sticky=W)
         self.sc_oriental_button = ctk.CTkRadioButton(master=self.SC_tab, text="Oriental", variable=self.line_to_be_edited, value='oriental', font=FONT)
-        self.sc_oriental_button.grid(column=2, row=2, padx=20, pady=20)
+        self.sc_oriental_button.grid(column=2, row=2, padx=20, pady=20, sticky=W)
         self.sc_internal_button = ctk.CTkRadioButton(master=self.SC_tab, text="Internal", variable=self.line_to_be_edited, value='internal', font=FONT)
-        self.sc_internal_button.grid(column=3, row=1, padx=20, pady=20)
-        self.sc_fm_buttom = ctk.CTkRadioButton(master=self.SC_tab, text="Fm", variable=self.line_to_be_edited, value='fm', font=FONT)
-        self.sc_fm_buttom.grid(column=3, row=0, padx=20, pady=20)
+        self.sc_internal_button.grid(column=3, row=1, padx=20, pady=20, sticky=W)
+        self.sc_fm_buttom = ctk.CTkRadioButton(master=self.SC_tab, text="Foot Massage", variable=self.line_to_be_edited, value='fm', font=FONT)
+        self.sc_fm_buttom.grid(column=3, row=0, padx=20, pady=20, sticky=W)
 
         self.testing_bot()
 
