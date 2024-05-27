@@ -16,6 +16,8 @@ color4 = "#F8F9D7"
 BLACK = "#000505"
 FONT = ("Helvetica", 16)
 BIG_FONT = ("Helvetica", 65)
+MID_FONT = ("Helvetica", 43)
+LINE_FONT = ("Helvetica", 33)
 
 with open(os.path.join("Lines", "index.txt")) as assign_index:
     patient_num_assign = int(assign_index.read())
@@ -35,8 +37,8 @@ class HealthExpo():
         ctk.set_default_color_theme("dark-blue")
         self.home.title("Health Expo")
         self.home.geometry("700x375")
-        icon_photo = PhotoImage(os.path.join("Assets", "icon.ico"))
-        self.home.iconbitmap(True, icon_photo)
+        self.icon_photo = PhotoImage(os.path.join("Assets", "icon.ico"))
+        self.home.iconbitmap(True, self.icon_photo)
         self.home.resizable(True, True)
         # True -> Width, True-> Height
 
@@ -63,6 +65,7 @@ class HealthExpo():
         self.eye_line_text = ctk.StringVar()
         self.oriental_line_text = ctk.StringVar()
         self.internal_line_text = ctk.StringVar()
+        self.fm_line_text = ctk.StringVar()
 
         tabs = ctk.CTkTabview(master=self.home, width=700)
         tabs.grid()
@@ -140,12 +143,6 @@ class HealthExpo():
                                 'Marvin', 'Melvin', 'Kyle', 'Kendell', 'Ava', 'Amanda', 'Archie', 'Bo', 'Bob', 'Braden',
                                 'Brantley', 'Carter', 'Cam', 'Carly'])
 
-        rand_address = random.choice(["afds", "qwer", "a;lsdkfjas;dlfkjas;d", "address road", "james road", "john road",
-                                    "brantley road", "Johnathan road", "kingston pike", "Hardin valley", "ava road",
-                                    "taylor road", "Oakwood drive", "jamie road", "arkansas road"])
-
-        rand_phone = ''.join([str(num) for num in random.choices(list(range(10)), k=10)])
-
         self.name_entry.insert(0, rand_name)
 
     def kick_out_plus_lw(self):
@@ -154,44 +151,42 @@ class HealthExpo():
 
 
     def deploy_line_window(self):
-        global first_time
-        self.scraper()
-        if first_time:
-            first_time = False
+        if self.first_time:
+            self.first_time = False
 
             lw = ctk.CTkToplevel()
             lw.title("Line Window")
             lw.iconbitmap(True, self.icon_photo)
-            lw.geometry("500x500")
+            lw.geometry("920x500")
 
-            dental_line = ctk.CTkLabel(lw, textvariable=self.dent_line_text, font=FONT)
+            dental_line = ctk.CTkLabel(lw, textvariable=self.dent_line_text, font=LINE_FONT)
             dental_line.grid(column=0, row=1, sticky="N")
 
-            dental_label = ctk.CTkLabel(lw, text="Dental", font=FONT)
+            dental_label = ctk.CTkLabel(lw, text="Dental", font=MID_FONT)
             dental_label.grid(column=0, row=0, padx=(60, 60))
 
-            eye_label = ctk.CTkLabel(lw, textvariable=self.eye_line_text, font=FONT)
+            eye_label = ctk.CTkLabel(lw, textvariable=self.eye_line_text, font=MID_FONT)
             eye_label.grid(column=1, row=1, sticky="N")
 
-            eye_label = ctk.CTkLabel(lw, text="Eye", font=FONT)
+            eye_label = ctk.CTkLabel(lw, text="Eye", font=MID_FONT)
             eye_label.grid(column=1, row=0, padx=(60, 60))
 
-            oriental_line = ctk.CTkLabel(lw, textvariable=self.oriental_line_text, font=FONT)
+            oriental_line = ctk.CTkLabel(lw, textvariable=self.oriental_line_text, font=LINE_FONT)
             oriental_line.grid(column=2, row=1)
 
-            oriental_label = ctk.CTkLabel(lw, text="Oriental", font=FONT)
+            oriental_label = ctk.CTkLabel(lw, text="Oriental", font=MID_FONT)
             oriental_label.grid(column=2, row=0, padx=(60, 60))
 
-            internal_line = ctk.CTkLabel(lw, textvariable=self.internal_line_text, font=FONT)
+            internal_line = ctk.CTkLabel(lw, textvariable=self.internal_line_text, font=LINE_FONT)
             internal_line.grid(column=3, row=1)
 
-            internal_label = ctk.CTkLabel(lw, text="Internal Med", font=FONT)
+            internal_label = ctk.CTkLabel(lw, text="Internal Med", font=MID_FONT)
             internal_label.grid(column=3, row=0, padx=(60, 60))
 
-            fm_line = ctk.CTkLabel(lw, textvariable=self.internal_line_text, font=FONT)
+            fm_line = ctk.CTkLabel(lw, textvariable=self.fm_line_text, font=LINE_FONT)
             fm_line.grid(column=4, row=1)
 
-            fm_label = ctk.CTkLabel(lw, text="Internal Med", font=FONT)
+            fm_label = ctk.CTkLabel(lw, text="Foot Massage", font=MID_FONT)
             fm_label.grid(column=4, row=0, padx=(60, 60))
 
             lw.mainloop()
@@ -413,30 +408,33 @@ class HealthExpo():
         #     print(f"This patient is finished -> {patient}")
 
 
-    def scraper(self):
-        """Scrapes all the information from {service}.txt files, the only function for linewindow"""
-        global dental_line
-        global internal_line
-        global eye_line
-        global oriental_line
-        global fm_line
-        
-        services = ['Dental', "Eye", "Oriental"]
+    def recover(self):
+        """Scrapes all the information from {service}.txt files, puts into lines (the lists)"""
+        services = ['Dental', "Eye", "Oriental", "Foot_Massage", "Internal"]
 
         for service in services:
             with open(os.path.join("Lines", f"{service}.txt")) as file:
-                new_patient_line = file.read()
-                new_patient_list = new_patient_line.split()
-                new_patient_str = '\n'.join(new_patient_list)
-                if service == "Dental":
-                    self.dent_line_text.set(new_patient_str)
-                    dental_line = self.dent_line_text.split("\n")
-                elif service == 'Eye':
-                    self.eye_line_text.set(new_patient_str)
-                elif service == "Oriental":
-                    self.oriental_line_text.set(new_patient_str)
-                elif service == "Internal":
-                    self.internal_line_text.set(new_patient_str)
+                patients_line = file.read()
+                patients_list = patients_line.split()
+                patients_str = '\n'.join(patients_list)
+
+                # update the lists, update the text to be rendered
+                match service:
+                    case "Dental":
+                        self.dent_line_text.set(patients_str)
+                        self.dental_line = patients_list
+                    case "Eye":
+                        self.eye_line_text.set(patients_str)
+                        self.eye_line = patients_list
+                    case "Oriental":
+                        self.oriental_line_text.set(patients_str)
+                        self.oriental_line = patients_list
+                    case "Internal":
+                        self.internal_line_text.set(patients_str)
+                        self.internal_line = patients_list
+                    case "Foot_Massage":
+                        self.fm_line_text.set(patients_str)
+                        self.fm_line = patients_list
 
 if __name__=='__main__':
     HealthExpo()

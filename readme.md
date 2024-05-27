@@ -9,6 +9,9 @@ Things/Tips I learned while making this project:
 Saving the permanent data will be done in the .csv file
 defining patients = {} and locating for entering lines will be saved in the json
 
+### Line Window
+It is supposed to be pulled up on a monitor in the lobby
+
 ## Future Ideas?
 Log File? <br>
 CLI tool to reset databases, index file, lines <br>
