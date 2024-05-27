@@ -15,6 +15,7 @@ color3 = "#C4D7E0"
 color4 = "#F8F9D7"
 BLACK = "#000505"
 FONT = ("arial", 16)
+BIG_FONT = ("arial", 65)
 
 with open(os.path.join("Lines", "index.txt")) as assign_index:
     patient_num_assign = int(assign_index.read())
@@ -75,29 +76,29 @@ class HealthExpo():
         self.name_label.configure(pady = 20)
 
         self.name_entry = ctk.CTkEntry(master=log_tab, fg_color=color2, text_color = BLACK, font=FONT)
-        self.name_entry.grid(column=0, row=1, sticky=EW)
+        self.name_entry.grid(column=0, row=1, sticky=EW, padx=20)
 
         # choosing services on log tab
         self.dental_button = ctk.CTkCheckBox(master=log_tab, text="Dental", variable=self.dental_checked, font=FONT)
-        self.dental_button.grid(column=1, row=1, sticky=E)
+        self.dental_button.grid(column=1, row=1, sticky=W, padx=40, pady=10)
         self.eye_button = ctk.CTkCheckBox(master=log_tab, text="Eye", variable=self.eye_checked, font=FONT)
-        self.eye_button.grid(column=1, row=3, sticky=E)
+        self.eye_button.grid(column=1, row=3, sticky=W, padx=40, pady=10)
         self.oriental_button = ctk.CTkCheckBox(master=log_tab, text="Oriental", variable=self.oriental_checked, font=FONT)
-        self.oriental_button.grid(column=1, row=5, sticky=E)
+        self.oriental_button.grid(column=1, row=5, sticky=W, padx=40, pady=10)
         self.internal_button = ctk.CTkCheckBox(master=log_tab, text="Internal", variable=self.internal_checked, font=FONT)
-        self.internal_button.grid(column=1, row=7, sticky=E)
+        self.internal_button.grid(column=2, row=1, sticky=W, padx=20, pady=10)
         self.fm_button = ctk.CTkCheckBox(master=log_tab, text="Foot Massage", variable=self.fm_checked, font=FONT)
-        self.fm_button.grid(column=1, row=9, sticky=E)
+        self.fm_button.grid(column=2, row=3, sticky=W, padx=20, pady=10)
 
-        self.counter_label = ctk.CTkLabel(master=log_tab, text=patient_num_assign, font=FONT)
+        self.counter_label = ctk.CTkLabel(master=log_tab, text=patient_num_assign, font=BIG_FONT)
         self.counter_label.grid(column=1, row=6)
-        self.counter_label.configure(pady=20)
+        self.counter_label.configure(pady=40)
 
         self.log_submit_button = ctk.CTkButton(master=log_tab, text="Submit", command=self.log_info_format, font=FONT, height=40)
         # add teh command for this button
-        self.log_submit_button.grid(column=1, row=7)
+        self.log_submit_button.grid(column=2, row=6)
 
-        #               sc configs                #
+        #               SC configs                #
         self.SC_tab = tabs.tab("Status Change")
 
         self.deploy_line_win_button = ctk.CTkButton(master=self.SC_tab, text="Line Window", command=self.deploy_line_window, font=FONT)
