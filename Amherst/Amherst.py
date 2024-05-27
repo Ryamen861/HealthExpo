@@ -14,8 +14,8 @@ color2 = "#B2C8DF"
 color3 = "#C4D7E0"
 color4 = "#F8F9D7"
 BLACK = "#000505"
-FONT = ("arial", 16)
-BIG_FONT = ("arial", 65)
+FONT = ("Helvetica", 16)
+BIG_FONT = ("Helvetica", 65)
 
 with open(os.path.join("Lines", "index.txt")) as assign_index:
     patient_num_assign = int(assign_index.read())
@@ -98,35 +98,34 @@ class HealthExpo():
         # add teh command for this button
         self.log_submit_button.grid(column=2, row=6)
 
-        #               SC configs                #
+        #               SC configs                # BETTER DESIGN?
         self.SC_tab = tabs.tab("Status Change")
 
         self.deploy_line_win_button = ctk.CTkButton(master=self.SC_tab, text="Line Window", command=self.deploy_line_window, font=FONT)
-        self.deploy_line_win_button.grid(column=2, row=7, sticky="ES")
+        self.deploy_line_win_button.grid(column=3, row=7, sticky="ES")
 
         self.patient_num_label = ctk.CTkLabel(master=self.SC_tab, text="Patient Num", font=FONT)
-        self.patient_num_label.grid(column=0, row=0, padx=(180, 10))
+        self.patient_num_label.grid(column=0, row=0, padx=(120, 30), sticky=S)
 
         self.to_be_SC_entry = ctk.CTkEntry(master=self.SC_tab, font=FONT)
-        self.to_be_SC_entry.grid(column=0, row=1, padx=(180, 10))
+        self.to_be_SC_entry.grid(column=0, row=1, padx=(120, 30), sticky=N)
 
         self.confirm_button = ctk.CTkCheckBox(master=self.SC_tab, text="Confirm", variable=self.confirm_checked, font=FONT)
-        self.confirm_button.grid(column=0, row=3, padx=(180, 10), pady=(0, 10))
+        self.confirm_button.grid(column=0, row=2, padx=(120, 30))
 
         self.sc_submit_button = ctk.CTkButton(master=self.SC_tab, text="Submit", command=self.kick_out_plus_lw, font=FONT)
-        self.sc_submit_button.grid(column=0, row=4, padx=(180, 10))
-
-        self.padding_text = ctk.CTkLabel(master=self.SC_tab, text="    ", font=FONT)
-        self.padding_text.grid(column=1, row=5)
+        self.sc_submit_button.grid(column=0, row=3, padx=(120, 30))
 
         self.sc_dental_button = ctk.CTkRadioButton(master=self.SC_tab, text="Dental", variable=self.line_to_be_edited, value='dental', font=FONT)
-        self.sc_dental_button.grid(column=2, row=0)
+        self.sc_dental_button.grid(column=2, row=0, padx=20, pady=20)
         self.sc_eye_button = ctk.CTkRadioButton(master=self.SC_tab, text="Eye", variable=self.line_to_be_edited, value='eye', font=FONT)
-        self.sc_eye_button.grid(column=2, row=1)
+        self.sc_eye_button.grid(column=2, row=1, padx=20, pady=20)
         self.sc_oriental_button = ctk.CTkRadioButton(master=self.SC_tab, text="Oriental", variable=self.line_to_be_edited, value='oriental', font=FONT)
-        self.sc_oriental_button.grid(column=2, row=2)
-        self.sc_internal_button = ctk.CTkRadioButton(master=self.SC_tab, text="Oriental", variable=self.line_to_be_edited, value='oriental', font=FONT)
-        self.sc_internal_button.grid(column=2, row=3)
+        self.sc_oriental_button.grid(column=2, row=2, padx=20, pady=20)
+        self.sc_internal_button = ctk.CTkRadioButton(master=self.SC_tab, text="Internal", variable=self.line_to_be_edited, value='internal', font=FONT)
+        self.sc_internal_button.grid(column=3, row=1, padx=20, pady=20)
+        self.sc_fm_buttom = ctk.CTkRadioButton(master=self.SC_tab, text="Fm", variable=self.line_to_be_edited, value='fm', font=FONT)
+        self.sc_fm_buttom.grid(column=3, row=0, padx=20, pady=20)
 
         self.testing_bot()
 
