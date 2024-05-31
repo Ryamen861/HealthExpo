@@ -1,10 +1,1 @@
-patient_num,name,phone,address,dental,mental,oriental
-0,Esau,889149331,afds,Dental,Mental,Oriental
-1,Luke,1321468073,Oakwood drive,Dental,Mental,Oriental
-2,jake,123,123,Dental,Mental,Oriental
-3,Joseph,3609448929,kingston pike,Dental,Mental,Oriental
-4,Bob,162406874,Hardin valley,Dental,Mental,Oriental
-5,Luke,5027190506,Johnathan road,Dental,Mental,Oriental
-6,Marvin,187580840,qwer,Dental,Mental,Oriental
-7,Esau,4865456487,brantley road,Dental,Mental,Oriental
-8,Mary,3988523644,Hardin valley,Dental,Mental,Oriental
+id,name,Dental,Eye,Oriental,Internal,Fm

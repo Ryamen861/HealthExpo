@@ -164,10 +164,11 @@ class HealthExpo():
             my_img_files = ["dental.png", "eye.png", "oriental.png", "internal.png", "foot.png"]
             for i in range(0, len(my_img_files)):
                 file_name = my_img_files[i]
-                print(file_name)
-                img_file = Image.open(os.path.join("Amherst", "Assets", file_name))
-                img_file = img_file.resize((100, 100), Image.Resampling.LANCZOS)
-                img = ImageTk.PhotoImage(img_file)
+                path = os.path.join("Amherst", "Assets", file_name)
+                img = ctk.CTkImage(light_image=Image.open(path),
+                                   dark_image=Image.open(path),
+                                   size=(100, 100)
+                                   )
                 img_label = ctk.CTkLabel(lw, text="", image=img)
                 img_label.grid(column=i, row=1)
 
@@ -280,7 +281,7 @@ class HealthExpo():
 
 
     def record(self, new_patient):
-        '''Puts patients in line, records information into csv, links the patient number to the patient list'''
+        '''Puts patients in line, records information into csv'''
 
         record_patients_data = pandas.read_csv(os.path.join("Amherst", "Databases", "record_patients.csv"))
         new_data = pandas.DataFrame(new_patient)
@@ -308,15 +309,14 @@ class HealthExpo():
 
         # I'm pretty proud of this one
         biggest = 0
-        for k, v in lengths:
+        for k, v in lengths.items():
             if v >= biggest:
                 sorted_list.insert(0, k)
                 biggest = v
             else:
                 sorted_list.append(k)
         
-        sorted_list = sorted_list.reverse()
-
+        sorted_list.reverse()
         return sorted_list # which has the shortest line first, longest line last
 
 
