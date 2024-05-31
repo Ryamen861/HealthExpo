@@ -1,6 +1,7 @@
 from tkinter import *
 from tkinter import messagebox
 import customtkinter as ctk
+from PIL import ImageTk, Image
 
 from pygame import mixer
 import json
@@ -9,17 +10,17 @@ import pandas
 import os
 import random
 
-color1 = "#6E85B7"
-color2 = "#B2C8DF"
-color3 = "#C4D7E0"
-color4 = "#F8F9D7"
+SILVER = "#F6F6F6"
+SKY = "#D6E4F0"
+SEA = "#1E56A0"
+NAVY = "#163172"
 BLACK = "#000505"
 FONT = ("Helvetica", 16)
 BIG_FONT = ("Helvetica", 65)
 MID_FONT = ("Helvetica", 43)
 LINE_FONT = ("Helvetica", 33)
 
-with open(os.path.join("Lines", "index.txt")) as assign_index:
+with open(os.path.join("Amherst", "Lines", "index.txt")) as assign_index:
     patient_num_assign = int(assign_index.read())
 
 # for audio
@@ -34,11 +35,11 @@ class HealthExpo():
         #                    UI                 #
         self.home = ctk.CTk()
         ctk.set_appearance_mode("System")
-        ctk.set_default_color_theme("dark-blue")
+        # ctk.set_default_color_theme(os.path.join("Amherst", "coast.json"))
         self.home.title("Health Expo")
         self.home.geometry("700x375")
-        self.icon_photo = PhotoImage(os.path.join("Assets", "icon.ico"))
-        self.home.iconbitmap(True, self.icon_photo)
+        self.icon_photo = PhotoImage(os.path.join("Amherst", "Assets", "icon.ico"))
+        self.home.iconbitmap(default=self.icon_photo)
         self.home.resizable(True, True)
         # True -> Width, True-> Height
 
@@ -78,7 +79,7 @@ class HealthExpo():
         self.name_label.grid(column=0, row=0, sticky=EW)
         self.name_label.configure(pady = 20)
 
-        self.name_entry = ctk.CTkEntry(master=log_tab, fg_color=color2, text_color = BLACK, font=FONT)
+        self.name_entry = ctk.CTkEntry(master=log_tab, fg_color=SKY, text_color = BLACK, font=FONT)
         self.name_entry.grid(column=0, row=1, sticky=EW, padx=20)
 
         # choosing services on log tab
@@ -156,8 +157,19 @@ class HealthExpo():
 
             lw = ctk.CTkToplevel()
             lw.title("Line Window")
+            lw.iconbitmap()
             lw.iconbitmap(True, self.icon_photo)
             lw.geometry("920x500")
+
+            my_img_files = ["dental.png", "eye.png", "oriental.png", "internal.png", "foot.png"]
+            for i in range(0, len(my_img_files)):
+                file_name = my_img_files[i]
+                print(file_name)
+                img_file = Image.open(os.path.join("Amherst", "Assets", file_name))
+                img_file = img_file.resize((100, 100), Image.Resampling.LANCZOS)
+                img = ImageTk.PhotoImage(img_file)
+                img_label = ctk.CTkLabel(lw, text="", image=img)
+                img_label.grid(column=i, row=1)
 
             dental_line = ctk.CTkLabel(lw, textvariable=self.dent_line_text, font=LINE_FONT)
             dental_line.grid(column=0, row=1, sticky="N")
@@ -270,16 +282,16 @@ class HealthExpo():
     def record(self, new_patient):
         '''Puts patients in line, records information into csv, links the patient number to the patient list'''
 
-        record_patients_data = pandas.read_csv(os.path.join("Databases", "record_patients.csv"))
+        record_patients_data = pandas.read_csv(os.path.join("Amherst", "Databases", "record_patients.csv"))
         new_data = pandas.DataFrame(new_patient)
         modified_data = pandas.concat([record_patients_data, new_data], ignore_index=True, join="inner")
-        modified_data.to_csv(os.path.join("Databases", "record_patients.csv"), index=False)
+        modified_data.to_csv(os.path.join("Amherst", "Databases", "record_patients.csv"), index=False)
 
         # add this information to the json file (WHY are we adding it to the JSON file?)
-        with open(os.path.join("Databases", "patients.json")) as file:
+        with open(os.path.join("Amherst", "Databases", "patients.json")) as file:
             data = json.load(file)
         data.update(new_patient)
-        with open(os.path.join("Databases", "patients.json"), 'w') as file:
+        with open(os.path.join("Amherst", "Databases", "patients.json"), 'w') as file:
             json.dump(data, file, indent=4)
 
 
@@ -309,7 +321,7 @@ class HealthExpo():
 
 
     def write_in_a_file(service, patient_num):
-        with open(os.path.join("Lines", f"{service}.txt"), 'a') as file:
+        with open(os.path.join("Amherst", "Lines", f"{service}.txt"), 'a') as file:
             file.write(str(patient_num) + ' ')
 
 
@@ -333,7 +345,7 @@ class HealthExpo():
         # Counter on the UI
         global patient_num_assign
         patient_num_assign += 1
-        with open(os.path.join("Lines", "index.txt"), mode='w') as back_in_index:
+        with open(os.path.join("Amherst", "Lines", "index.txt"), mode='w') as back_in_index:
             back_in_index.write(str(patient_num_assign))
         self.counter_label.configure(text=str(patient_num_assign))
 
@@ -341,7 +353,7 @@ class HealthExpo():
     def kick_out(self):
         '''takes the first one in a specified line out'''
 
-        with open(os.path.join("Lines", f"{self.line_to_be_edited.get()}.txt")) as selected_file:
+        with open(os.path.join("Amherst", "Lines", f"{self.line_to_be_edited.get()}.txt")) as selected_file:
             data = selected_file.read()
             data = data.split()
 
@@ -350,13 +362,13 @@ class HealthExpo():
 
             data.pop(0)
 
-            with open(os.path.join("Lines", f"{self.line_to_be_edited.get()}.txt"), 'w') as update_file:
+            with open(os.path.join("Amherst", "Lines", f"{self.line_to_be_edited.get()}.txt"), 'w') as update_file:
                 ready_to_write = ' '.join(data) + ' '
                 update_file.write(ready_to_write)
 
             self.re_enter(int(self.to_be_SC_entry.get()))
 
-            mixer.music.load(os.path.join("Assets", "notification_sound2.mp3"))
+            mixer.music.load(os.path.join("Amherst", "Assets", "notification_sound2.mp3"))
             mixer.music.play(loops=0)
 
         else:
@@ -367,7 +379,7 @@ class HealthExpo():
     def re_enter(self, patient_num):
         """places the patient num back into another line"""
 
-        with open(os.path.join("Databases", "patients.json")) as file:
+        with open(os.path.join("Amherst", "Databases", "patients.json")) as file:
             patients = json.load(file)
 
         patient = patients[str(patient_num)]
@@ -380,7 +392,7 @@ class HealthExpo():
         for service in sorted_services:
             if service in patient:
                 print(f"we found it,{service}, second in that line now")
-                with open(os.path.join("Lines", f"{service}.txt")) as file:
+                with open(os.path.join("Amherst", "Lines", f"{service}.txt")) as file:
                     contents = file.read()
                     xlist = contents.split()
                     xlist.append(str(patient_num))
@@ -389,7 +401,7 @@ class HealthExpo():
                     sliced_list.sort()
                     sliced_list.insert(0, xlist[0])
 
-                with open(os.path.join("Lines", f"{service}.txt"), 'w') as file:
+                with open(os.path.join("Amherst", "Lines", f"{service}.txt"), 'w') as file:
                     ready_to_go = ' '.join(sliced_list) + ' '
                     file.write(ready_to_go)
 
@@ -397,7 +409,7 @@ class HealthExpo():
                 patient[the_service_index] = service + 'x'
 
                 # now that we've marked the service as done with an x, we will now update the patients.json
-                with open(os.path.join("Databases", "patients.json"), 'w') as file:
+                with open(os.path.join("Amherst", "Databases", "patients.json"), 'w') as file:
                     patients[str(patient_num)] = patient
                     json.dump(patients, file, indent=4)
                 break
@@ -413,7 +425,7 @@ class HealthExpo():
         services = ['Dental', "Eye", "Oriental", "Foot_Massage", "Internal"]
 
         for service in services:
-            with open(os.path.join("Lines", f"{service}.txt")) as file:
+            with open(os.path.join("Amherst", "Lines", f"{service}.txt")) as file:
                 patients_line = file.read()
                 patients_list = patients_line.split()
                 patients_str = '\n'.join(patients_list)

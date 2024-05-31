@@ -1,0 +1,28 @@
+Notes from last coding session:
+Finish up line window (patient id's are not showing)
+Figure out if "re-enter" method is working correctly
+What size is the other monitor (Samsung TV)
+    Trouble shoot on that screen, adjust fonts and spacing for it
+Add error handling to line_window and when it comes to removing patients
+    There was for sure one error when I tested it with David
+    Get David to download the program on his machine
+Make finishing touches to UI, it does NOT look good, particularly the SC window, also kind of the Line window
+
+When we have multiple services at one time (like foot massage), we should use either color or boldness to show which ones are in
+
+
+eye || ahn-kkwah
+dental
+oriental
+internal medicine
+foot massage 3
+
+## Future Ideas?
+Tool to reset databases, index file, lines
+reset SC window inputs after "Submit" button pressed
+once submit button clicked? 
+entry.focus_set()
+
+Add korean/images (image of eye, teeth) to line window list names (Dental Chik-wah)
+
+ICO files (logo) does not work on mac, need xbm
