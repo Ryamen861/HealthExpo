@@ -26,3 +26,5 @@ entry.focus_set()
 Add korean/images (image of eye, teeth) to line window list names (Dental Chik-wah)
 
 ICO files (logo) does not work on mac, need xbm
+
+Write a note at the bottom - "If your number is first in line, please enter the correlated service room"

@@ -64,3 +64,15 @@ id,name,Dental,Eye,Oriental,Internal,Fm
 5,John,0,0,1,0,0
 101,Kyle,0,0,0,0,0
 101,Ava,0,1,0,0,0
+101,Solomon,0,1,1,0,0
+102,John,1,0,1,0,0
+103,Cam,1,1,0,0,0
+104,Matthew,0,1,1,0,0
+101,Joseph,0,1,1,0,0
+102,Carter,1,0,1,0,0
+103,Luke,0,1,0,0,1
+101,Amanda,0,1,1,0,0
+102,James,1,0,1,0,0
+101,Bob,0,1,1,0,0
+101,John,0,1,1,0,0
+101,Braden,0,1,0,0,0

@@ -17,7 +17,7 @@ NAVY = "#163172"
 BLACK = "#000505"
 FONT = ("Helvetica", 16)
 BIG_FONT = ("Helvetica", 55)
-MID_FONT = ("Helvetica", 25)
+MID_FONT = ("Helvetica", 32)
 LINE_FONT = ("Helvetica", 20)
 
 # for audio
@@ -158,15 +158,15 @@ class HealthExpo():
             lw.iconbitmap(True, self.icon_photo)
             lw.geometry("920x500")
 
-            dental_scrollframe = ctk.CTkScrollableFrame(lw, width=160, height=250, label_text="Dental/치과", label_font=LINE_FONT)
+            dental_scrollframe = ctk.CTkScrollableFrame(lw, width=180, height=250, label_text="Dental/치과", label_font=LINE_FONT)
             dental_scrollframe.grid(column=0, row=0, padx=20, pady=20)
-            eye_scrollframe = ctk.CTkScrollableFrame(lw, width=160, height=250, label_text="Eye", label_font=LINE_FONT)
+            eye_scrollframe = ctk.CTkScrollableFrame(lw, width=180, height=250, label_text="Eye", label_font=LINE_FONT)
             eye_scrollframe.grid(column=1, row=0, padx=20, pady=20, sticky=W)
-            oriental_scrollframe = ctk.CTkScrollableFrame(lw, width=160, height=250, label_text="Oriental", label_font=LINE_FONT)
+            oriental_scrollframe = ctk.CTkScrollableFrame(lw, width=180, height=250, label_text="Oriental", label_font=LINE_FONT)
             oriental_scrollframe.grid(column=2, row=0, padx=20, pady=20, sticky=W)
-            internal_scrollframe = ctk.CTkScrollableFrame(lw, width=160, height=250, label_text="Internal", label_font=LINE_FONT)
+            internal_scrollframe = ctk.CTkScrollableFrame(lw, width=180, height=250, label_text="Internal", label_font=LINE_FONT)
             internal_scrollframe.grid(column=0, row=1, padx=20, pady=20)
-            fm_scrollframe = ctk.CTkScrollableFrame(lw, width=160, height=250, label_text="Foot Massage", label_font=LINE_FONT)
+            fm_scrollframe = ctk.CTkScrollableFrame(lw, width=180, height=250, label_text="Foot Massage", label_font=LINE_FONT)
             fm_scrollframe.grid(column=1, row=1, padx=20, pady=20)
 
             my_img_files = ["dental.png", "eye.png", "oriental.png", "internal.png", "foot.png"]
@@ -183,21 +183,21 @@ class HealthExpo():
                 img_label.grid(column=0, row=0, sticky=N)
 
             # TOP ROW
-            dental_line = ctk.CTkLabel(dental_scrollframe, textvariable=self.dent_line_text, font=LINE_FONT)
-            dental_line.grid(column=1, row=0, sticky="N", padx=50)
+            dental_line = ctk.CTkLabel(dental_scrollframe, textvariable=self.dent_line_text, font=MID_FONT)
+            dental_line.grid(column=1, row=0, sticky="N", padx=30)
 
             eye_line = ctk.CTkLabel(eye_scrollframe, textvariable=self.eye_line_text, font=MID_FONT)
-            eye_line.grid(column=1, row=0, sticky="N", padx=50)
+            eye_line.grid(column=1, row=0, sticky="N", padx=30)
 
-            oriental_line = ctk.CTkLabel(oriental_scrollframe, textvariable=self.oriental_line_text, font=LINE_FONT)
-            oriental_line.grid(column=1, row=0, sticky="N", padx=50)
+            oriental_line = ctk.CTkLabel(oriental_scrollframe, textvariable=self.oriental_line_text, font=MID_FONT)
+            oriental_line.grid(column=1, row=0, sticky="N", padx=30)
 
             # BOTTOM ROW
-            internal_line = ctk.CTkLabel(internal_scrollframe, textvariable=self.internal_line_text, font=LINE_FONT)
-            internal_line.grid(column=1, row=0, sticky="N", padx=50)
+            internal_line = ctk.CTkLabel(internal_scrollframe, textvariable=self.internal_line_text, font=MID_FONT)
+            internal_line.grid(column=1, row=0, sticky="N", padx=30)
 
-            fm_line = ctk.CTkLabel(fm_scrollframe, textvariable=self.fm_line_text, font=LINE_FONT)
-            fm_line.grid(column=1, row=0, sticky="N", padx=50)
+            fm_line = ctk.CTkLabel(fm_scrollframe, textvariable=self.fm_line_text, font=MID_FONT)
+            fm_line.grid(column=1, row=0, sticky="N", padx=30)
 
             lw.mainloop()
 
