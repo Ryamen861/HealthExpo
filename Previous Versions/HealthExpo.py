@@ -16,7 +16,7 @@ color4 = "#F8F9D7"
 BLACK = "#000505"
 FONT = ("arial", 16)
 
-with open(os.path.join("Lines", "index.txt")) as assign_index:
+with open(os.path.join("Previous Versions", "Lines", "index.txt")) as assign_index:
     patient_num_assign = int(assign_index.read())
 
 # for audio
@@ -119,7 +119,7 @@ def log_info_format():
 def record(patient_num, new_patient):
     '''Puts patients in line, records information into csv, links the patient number to the patient list'''
 
-    record_patients_data = pandas.read_csv(os.path.join("Databases", "record_patients.csv"))
+    record_patients_data = pandas.read_csv(os.path.join("Previous Versions", "Databases", "record_patients.csv"))
     print("permanent saving")
     new_dict = {
         "patient_num": [patient_num],
@@ -134,7 +134,7 @@ def record(patient_num, new_patient):
     new_data = pandas.DataFrame(new_dict)
     modified_data = pandas.concat([record_patients_data, new_data], ignore_index=True, join="inner")
     print(modified_data)
-    modified_data.to_csv(os.path.join("Databases", "record_patients.csv"), index=False)
+    modified_data.to_csv(os.path.join("Previous Versions", "Databases", "record_patients.csv"), index=False)
 
     sorted_services = sort_the_lines()
 
@@ -153,10 +153,10 @@ def record(patient_num, new_patient):
 
     # add this information to the json file
     new_data = {patient_num: new_patient}
-    with open(os.path.join("Databases", "patients.json")) as file:
+    with open(os.path.join("Previous Versions", "Databases", "patients.json")) as file:
         data = json.load(file)
     data.update(new_data)
-    with open(os.path.join("Databases", "patients.json"), 'w') as file:
+    with open(os.path.join("Previous Versions", "Databases", "patients.json"), 'w') as file:
         json.dump(data, file, indent=4)
 
     tick_counter()
@@ -168,14 +168,14 @@ def sort_the_lines():
     # this is a sub thing to self.record()
 
     # read all the lines, defines lengths
-    with open(os.path.join("Lines", "Dental.txt")) as d_file:
+    with open(os.path.join("Previous Versions", "Lines", "Dental.txt")) as d_file:
         d_line_len = len(d_file.read().split())
         # self.d_line_len is a integer that defines the length of the dental line
 
-    with open(os.path.join("Lines", "Mental.txt")) as m_file:
+    with open(os.path.join("Previous Versions", "Lines", "Mental.txt")) as m_file:
         m_line_len = len(m_file.read().split())
 
-    with open(os.path.join("Lines", "Oriental.txt")) as o_file:
+    with open(os.path.join("Previous Versions", "Lines", "Oriental.txt")) as o_file:
         o_line_len = len(o_file.read().split())
 
     line_lengths_list = [[d_line_len, "Dental"], [m_line_len, "Mental"], [o_line_len, "Oriental"]]
@@ -195,7 +195,7 @@ def sort_the_lines():
 
 
 def write_in_a_file(service, patient_num):
-    with open(os.path.join("Lines", f"{service}.txt"), 'a') as file:
+    with open(os.path.join("Previous Versions", "Lines", f"{service}.txt"), 'a') as file:
         file.write(str(patient_num) + ' ')
 
 
@@ -219,7 +219,7 @@ def tick_counter():
     # Counter on the UI
     global patient_num_assign
     patient_num_assign += 1
-    with open(os.path.join("Lines", "index.txt"), mode='w') as back_in_index:
+    with open(os.path.join("Previous Versions", "Lines", "index.txt"), mode='w') as back_in_index:
         back_in_index.write(str(patient_num_assign))
     counter_label.configure(text=str(patient_num_assign))
 
@@ -228,7 +228,7 @@ def kick_out():
     '''takes the first one in a specified line out'''
     global line_to_be_edited
 
-    with open(os.path.join("Lines", f"{line_to_be_edited.get()}.txt")) as selected_file:
+    with open(os.path.join("Previous Versions", "Lines", f"{line_to_be_edited.get()}.txt")) as selected_file:
         data = selected_file.read()
         data = data.split()
 
@@ -237,13 +237,13 @@ def kick_out():
 
         data.pop(0)
 
-        with open(os.path.join("Lines", f"{line_to_be_edited.get()}.txt"), 'w') as update_file:
+        with open(os.path.join("Previous Versions", "Lines", f"{line_to_be_edited.get()}.txt"), 'w') as update_file:
             ready_to_write = ' '.join(data) + ' '
             update_file.write(ready_to_write)
 
         re_enter(int(to_be_SC_entry.get()))
 
-        mixer.music.load(os.path.join("Assets", "notification_sound2.mp3"))
+        mixer.music.load(os.path.join("Previous Versions", "Assets", "notification_sound2.mp3"))
         mixer.music.play(loops=0)
 
     else:
@@ -254,7 +254,7 @@ def kick_out():
 def re_enter(patient_num):
     """places the patient num back into another line"""
 
-    with open(os.path.join("Databases", "patients.json")) as file:
+    with open(os.path.join("Previous Versions", "Databases", "patients.json")) as file:
         patients = json.load(file)
 
     patient = patients[str(patient_num)]
@@ -267,7 +267,7 @@ def re_enter(patient_num):
     for service in sorted_services:
         if service in patient:
             print(f"we found it,{service}, second in that line now")
-            with open(os.path.join("Lines", f"{service}.txt")) as file:
+            with open(os.path.join("Previous Versions", "Lines", f"{service}.txt")) as file:
                 contents = file.read()
                 xlist = contents.split()
                 xlist.append(str(patient_num))
@@ -276,7 +276,7 @@ def re_enter(patient_num):
                 sliced_list.sort()
                 sliced_list.insert(0, xlist[0])
 
-            with open(os.path.join("Lines", f"{service}.txt"), 'w') as file:
+            with open(os.path.join("Previous Versions", "Lines", f"{service}.txt"), 'w') as file:
                 ready_to_go = ' '.join(sliced_list) + ' '
                 file.write(ready_to_go)
 
@@ -284,7 +284,7 @@ def re_enter(patient_num):
             patient[the_service_index] = service + 'x'
 
             # now that we've marked the service as done with an x, we will now update the patients.json
-            with open(os.path.join("Databases", "patients.json"), 'w') as file:
+            with open(os.path.join("Previous Versions", "Databases", "patients.json"), 'w') as file:
                 patients[str(patient_num)] = patient
                 json.dump(patients, file, indent=4)
             break
@@ -303,7 +303,7 @@ def scraper():
     services = ['Dental', "Mental", "Oriental"]
 
     for service in services:
-        with open(os.path.join("Lines", f"{service}.txt")) as file:
+        with open(os.path.join("Previous Versions", "Lines", f"{service}.txt")) as file:
             new_patient_line = file.read()
             new_patient_list = new_patient_line.split()
             new_patient_str = '\n'.join(new_patient_list)
@@ -321,7 +321,7 @@ ctk.set_default_color_theme("dark-blue")
 manager_win = ctk.CTk()
 manager_win.title("Health Expo")
 manager_win.geometry("700x375")
-icon_photo = PhotoImage(os.path.join("Assets", "icon.ico"))
+icon_photo = PhotoImage(os.path.join("Previous Versions", "Assets", "icon.ico"))
 manager_win.iconbitmap(True, icon_photo)
 # below is making the app resizeable
 manager_win.resizable(True, True)

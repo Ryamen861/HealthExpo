@@ -1,0 +1,36 @@
+{
+    "0": [
+        0,
+        "Esau",
+        "0889149331",
+        "afds",
+        "Dentalx",
+        "Mentalx",
+        "Orientalx"
+    ],
+    "id": 1,
+    "name": "Melvin",
+    "Dental": 0,
+    "Eye": 1,
+    "Oriental": 1,
+    "Internal": 0,
+    "Fm": 0,
+    "1": [
+        1,
+        "Mark",
+        "5034852281",
+        "taylor road",
+        "Dentalx",
+        "Mentalx",
+        " "
+    ],
+    "2": [
+        2,
+        "123",
+        "123",
+        "123",
+        "Dental",
+        "Mentalx",
+        "Oriental"
+    ]
+}

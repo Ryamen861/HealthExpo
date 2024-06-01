@@ -16,12 +16,9 @@ SEA = "#1E56A0"
 NAVY = "#163172"
 BLACK = "#000505"
 FONT = ("Helvetica", 16)
-BIG_FONT = ("Helvetica", 65)
-MID_FONT = ("Helvetica", 43)
-LINE_FONT = ("Helvetica", 33)
-
-with open(os.path.join("Amherst", "Lines", "index.txt")) as assign_index:
-    patient_num_assign = int(assign_index.read())
+BIG_FONT = ("Helvetica", 55)
+MID_FONT = ("Helvetica", 25)
+LINE_FONT = ("Helvetica", 20)
 
 # for audio
 mixer.init()
@@ -31,6 +28,8 @@ the_key = "key"
 class HealthExpo():
     def __init__(self):
         self.first_time = True
+        with open(os.path.join("Amherst", "Lines", "index.txt")) as assign_index:
+            self.patient_num_assign = int(assign_index.read())
 
         #                    UI                 #
         self.home = ctk.CTk()
@@ -68,6 +67,9 @@ class HealthExpo():
         self.internal_line_text = ctk.StringVar()
         self.fm_line_text = ctk.StringVar()
 
+        self.lines = [self.dental_line, self.eye_line, self.oriental_line, self.internal_line, self.fm_line]
+        self.texts = [self.dent_line_text, self.eye_line_text, self.oriental_line_text, self.internal_line_text, self.fm_line_text]
+ 
         tabs = ctk.CTkTabview(master=self.home, width=700)
         tabs.grid()
         tabs.add("Log")
@@ -94,15 +96,14 @@ class HealthExpo():
         self.fm_button = ctk.CTkCheckBox(master=log_tab, text="Foot Massage", variable=self.fm_checked, font=FONT)
         self.fm_button.grid(column=2, row=3, sticky=W, padx=20, pady=10)
 
-        self.counter_label = ctk.CTkLabel(master=log_tab, text=patient_num_assign, font=BIG_FONT)
-        self.counter_label.grid(column=1, row=6)
-        self.counter_label.configure(pady=40)
+        self.counter_label = ctk.CTkLabel(master=log_tab, text=self.patient_num_assign, font=BIG_FONT)
+        self.counter_label.grid(column=1, row=6, pady=40)
 
         self.log_submit_button = ctk.CTkButton(master=log_tab, text="Submit", command=self.log_info_format, font=FONT, height=40)
         # add teh command for this button
         self.log_submit_button.grid(column=2, row=6)
 
-        #               SC configs                # BETTER DESIGN?
+        #               SC configs                #
         self.SC_tab = tabs.tab("Status Change")
 
         self.deploy_line_win_button = ctk.CTkButton(master=self.SC_tab, text="Line Window", command=self.deploy_line_window, font=FONT)
@@ -152,55 +153,51 @@ class HealthExpo():
 
 
     def deploy_line_window(self):
-        if self.first_time:
-            self.first_time = False
-
             lw = ctk.CTkToplevel()
             lw.title("Line Window")
-            lw.iconbitmap()
             lw.iconbitmap(True, self.icon_photo)
             lw.geometry("920x500")
 
+            dental_scrollframe = ctk.CTkScrollableFrame(lw, width=160, height=250, label_text="Dental", label_font=LINE_FONT)
+            dental_scrollframe.grid(column=0, row=0, padx=20, pady=20)
+            eye_scrollframe = ctk.CTkScrollableFrame(lw, width=160, height=250, label_text="Eye", label_font=LINE_FONT)
+            eye_scrollframe.grid(column=1, row=0, padx=20, pady=20, sticky=W)
+            oriental_scrollframe = ctk.CTkScrollableFrame(lw, width=160, height=250, label_text="Oriental", label_font=LINE_FONT)
+            oriental_scrollframe.grid(column=2, row=0, padx=20, pady=20, sticky=W)
+            internal_scrollframe = ctk.CTkScrollableFrame(lw, width=160, height=250, label_text="Internal", label_font=LINE_FONT)
+            internal_scrollframe.grid(column=0, row=1, padx=20, pady=20)
+            fm_scrollframe = ctk.CTkScrollableFrame(lw, width=160, height=250, label_text="Foot Massage", label_font=LINE_FONT)
+            fm_scrollframe.grid(column=1, row=1, padx=20, pady=20)
+
             my_img_files = ["dental.png", "eye.png", "oriental.png", "internal.png", "foot.png"]
+            my_scrollframes = [dental_scrollframe, eye_scrollframe, oriental_scrollframe, internal_scrollframe, fm_scrollframe]
             for i in range(0, len(my_img_files)):
                 file_name = my_img_files[i]
+                frame = my_scrollframes[i]
                 path = os.path.join("Amherst", "Assets", file_name)
                 img = ctk.CTkImage(light_image=Image.open(path),
-                                   dark_image=Image.open(path),
-                                   size=(100, 100)
-                                   )
-                img_label = ctk.CTkLabel(lw, text="", image=img)
-                img_label.grid(column=i, row=1)
+                                dark_image=Image.open(path),
+                                size=(60, 60)
+                                )
+                img_label = ctk.CTkLabel(frame, text="", image=img)
+                img_label.grid(column=0, row=0, sticky=N)
 
-            dental_line = ctk.CTkLabel(lw, textvariable=self.dent_line_text, font=LINE_FONT)
-            dental_line.grid(column=0, row=1, sticky="N")
+            # TOP ROW
+            dental_line = ctk.CTkLabel(dental_scrollframe, textvariable=self.dent_line_text, font=LINE_FONT)
+            dental_line.grid(column=1, row=0, sticky="N", padx=50)
 
-            dental_label = ctk.CTkLabel(lw, text="Dental", font=MID_FONT)
-            dental_label.grid(column=0, row=0, padx=(60, 60))
+            eye_line = ctk.CTkLabel(eye_scrollframe, textvariable=self.eye_line_text, font=MID_FONT)
+            eye_line.grid(column=1, row=0, sticky="N", padx=50)
 
-            eye_label = ctk.CTkLabel(lw, textvariable=self.eye_line_text, font=MID_FONT)
-            eye_label.grid(column=1, row=1, sticky="N")
+            oriental_line = ctk.CTkLabel(oriental_scrollframe, textvariable=self.oriental_line_text, font=LINE_FONT)
+            oriental_line.grid(column=1, row=0, sticky="N", padx=50)
 
-            eye_label = ctk.CTkLabel(lw, text="Eye", font=MID_FONT)
-            eye_label.grid(column=1, row=0, padx=(60, 60))
+            # BOTTOM ROW
+            internal_line = ctk.CTkLabel(internal_scrollframe, textvariable=self.internal_line_text, font=LINE_FONT)
+            internal_line.grid(column=1, row=0, sticky="N", padx=50)
 
-            oriental_line = ctk.CTkLabel(lw, textvariable=self.oriental_line_text, font=LINE_FONT)
-            oriental_line.grid(column=2, row=1)
-
-            oriental_label = ctk.CTkLabel(lw, text="Oriental", font=MID_FONT)
-            oriental_label.grid(column=2, row=0, padx=(60, 60))
-
-            internal_line = ctk.CTkLabel(lw, textvariable=self.internal_line_text, font=LINE_FONT)
-            internal_line.grid(column=3, row=1)
-
-            internal_label = ctk.CTkLabel(lw, text="Internal Med", font=MID_FONT)
-            internal_label.grid(column=3, row=0, padx=(60, 60))
-
-            fm_line = ctk.CTkLabel(lw, textvariable=self.fm_line_text, font=LINE_FONT)
-            fm_line.grid(column=4, row=1)
-
-            fm_label = ctk.CTkLabel(lw, text="Foot Massage", font=MID_FONT)
-            fm_label.grid(column=4, row=0, padx=(60, 60))
+            fm_line = ctk.CTkLabel(fm_scrollframe, textvariable=self.fm_line_text, font=LINE_FONT)
+            fm_line.grid(column=1, row=0, sticky="N", padx=50)
 
             lw.mainloop()
 
@@ -215,7 +212,7 @@ class HealthExpo():
 
         else:
             new_patient = {
-                "id": patient_num_assign,
+                "id": self.patient_num_assign,
                 "name": self.name_entry.get(),
             }
 
@@ -245,46 +242,76 @@ class HealthExpo():
             else:   
                 new_patient["Fm"] = 0
 
-            self.liner(new_patient, patient_num_assign)
+            self.liner(new_patient, self.patient_num_assign)
             self.record(new_patient)
             # update line window to have new patient included in lines
-            self.deploy_line_window()
+            # self.deploy_line_window()
 
-            self.tick_counter()
+            # Counter on the UI
+            self.patient_num_assign += 1
+            self.counter_label.configure(text=self.patient_num_assign)
             self.clear_inputs()
 
             self.testing_bot()
 
     def liner(self, new_patient, id):
+        """Puts ID's in line"""
         sorted_services = self.sort_the_lines()
 
         for service in sorted_services:
             # service is a service in string form
             if new_patient[service] == 1:
                 match service:
+                    # case {service}:
+                    #   put id in line, sort it
+
                     case "Dental":
                         self.dental_line.append(id)
+                        sliced_list = self.dental_line[1::]
+                        sliced_list.sort()
+                        sliced_list.insert(0, self.dental_line[0])
+                        self.dent_line_text.set("\n".join(map(self.stringify, sliced_list)))
                     case "Oriental":
                         self.oriental_line.append(id)
+                        sliced_list = self.oriental_line[1::]
+                        sliced_list.sort()
+                        sliced_list.insert(0, self.oriental_line[0])
+                        self.oriental_line_text.set("\n".join(map(self.stringify, sliced_list)))
+
                     case "Eye":
                         self.eye_line.append(id)
+                        sliced_list = self.eye_line[1::]
+                        sliced_list.sort()
+                        sliced_list.insert(0, self.eye_line[0])
+                        self.eye_line_text.set("\n".join(map(self.stringify, sliced_list)))
                     case "Internal":
                         self.internal_line.append(id)
+                        sliced_list = self.internal_line[1::]
+                        sliced_list.sort()
+                        sliced_list.insert(0, self.internal_line[0])
+                        self.internal_line_text.set("\n".join(map(self.stringify, sliced_list)))
+
                     case "Fm":
                         self.fm_line.append(id)
+                        sliced_list = self.fm_line[1::]
+                        sliced_list.sort()
+                        sliced_list.insert(0, self.fm_line[0])
+                        self.fm_line_text.set("\n".join(map(self.stringify, sliced_list)))
 
                 # mark that service so we don't run into it again in self.re_enter()
                 new_patient[service] = 0
                 break
             else:
-                print('found no match')
+                print('found no match')  
 
+    def stringify(self, num):
+        return str(num)
 
     def record(self, new_patient):
         '''Puts patients in line, records information into csv'''
 
         record_patients_data = pandas.read_csv(os.path.join("Amherst", "Databases", "record_patients.csv"))
-        new_data = pandas.DataFrame(new_patient)
+        new_data = pandas.DataFrame(new_patient, index=[0])
         modified_data = pandas.concat([record_patients_data, new_data], ignore_index=True, join="inner")
         modified_data.to_csv(os.path.join("Amherst", "Databases", "record_patients.csv"), index=False)
 
@@ -328,13 +355,14 @@ class HealthExpo():
     def clear_inputs(self):
         # clear the text edits
         self.name_entry.delete(0, END)
-        self.phone_entry.delete(0, END)
-        self.address_entry.delete(0, END)
 
         # clear the checkboxes
         self.dental_button.deselect()
         self.eye_button.deselect()
         self.oriental_button.deselect()
+        self.eye_button.deselect()
+        self.fm_button.deselect()
+        self.internal_button.deselect()
 
         # for the SC
         self.confirm_button.deselect()
@@ -342,12 +370,10 @@ class HealthExpo():
 
 
     def tick_counter(self):
-        # Counter on the UI
-        global patient_num_assign
-        patient_num_assign += 1
+        
+
         with open(os.path.join("Amherst", "Lines", "index.txt"), mode='w') as back_in_index:
-            back_in_index.write(str(patient_num_assign))
-        self.counter_label.configure(text=str(patient_num_assign))
+            back_in_index.write(str(self.patient_num_assign))
 
 
     def kick_out(self):

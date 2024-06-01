@@ -7,5 +7,12 @@
         "Dentalx",
         "Mentalx",
         "Orientalx"
-    ]
+    ],
+    "id": 6,
+    "name": "Bob",
+    "Dental": 0,
+    "Eye": 0,
+    "Oriental": 0,
+    "Internal": 0,
+    "Fm": 0
 }
