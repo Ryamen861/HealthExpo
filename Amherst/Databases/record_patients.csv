@@ -53,3 +53,14 @@ id,name,Dental,Eye,Oriental,Internal,Fm
 4,John,0,0,0,0,0
 5,Luke,0,0,0,0,0
 6,Bob,0,0,0,0,0
+1,Carly,0,1,1,0,0
+2,Bob,1,0,0,0,0
+3,Cam,0,1,0,0,0
+4,Solomon,1,0,0,0,0
+1,Braden,0,1,0,0,0
+2,Jacob,1,0,0,0,0
+3,James,1,1,0,0,0
+4,John,0,1,0,0,0
+5,John,0,0,1,0,0
+101,Kyle,0,0,0,0,0
+101,Ava,0,1,0,0,0

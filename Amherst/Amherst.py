@@ -158,7 +158,7 @@ class HealthExpo():
             lw.iconbitmap(True, self.icon_photo)
             lw.geometry("920x500")
 
-            dental_scrollframe = ctk.CTkScrollableFrame(lw, width=160, height=250, label_text="Dental", label_font=LINE_FONT)
+            dental_scrollframe = ctk.CTkScrollableFrame(lw, width=160, height=250, label_text="Dental/치과", label_font=LINE_FONT)
             dental_scrollframe.grid(column=0, row=0, padx=20, pady=20)
             eye_scrollframe = ctk.CTkScrollableFrame(lw, width=160, height=250, label_text="Eye", label_font=LINE_FONT)
             eye_scrollframe.grid(column=1, row=0, padx=20, pady=20, sticky=W)

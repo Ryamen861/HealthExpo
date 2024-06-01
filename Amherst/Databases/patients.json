@@ -8,10 +8,10 @@
         "Mentalx",
         "Orientalx"
     ],
-    "id": 6,
-    "name": "Bob",
+    "id": 101,
+    "name": "Ava",
     "Dental": 0,
-    "Eye": 0,
+    "Eye": 1,
     "Oriental": 0,
     "Internal": 0,
     "Fm": 0
