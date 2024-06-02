@@ -2,6 +2,7 @@ from tkinter import *
 from tkinter import messagebox
 import customtkinter as ctk
 from PIL import ImageTk, Image
+from copy import deepcopy
 
 from pygame import mixer
 import json
@@ -29,6 +30,7 @@ the_key = "key"
 
 class HealthExpo():
     def __init__(self):
+        self.recover()
         self.first_time = True
         with open(os.path.join("Amherst", "Lines", "index.txt")) as assign_index:
             self.patient_num_assign = int(assign_index.read())
@@ -147,12 +149,16 @@ class HealthExpo():
         self.sc_fm_buttom = ctk.CTkRadioButton(master=self.SC_tab, text="Foot Massage", variable=self.line_to_be_edited, value='fm', font=FONT)
         self.sc_fm_buttom.grid(column=3, row=0, padx=20, pady=20, sticky=W)
 
-        self.patients = {} # list of patients (type: dict)
+        self.patients = {
+            # dict of patients
+        }
 
         self.testing_bot()
 
         self.home.mainloop()
-    
+        
+        self.save_changes(self.patients, self.lines)
+
     ################# FUNCTIONALITY ##################
 
     def testing_bot(self):
@@ -213,7 +219,6 @@ class HealthExpo():
 
             lw.mainloop()
 
-
     def log_info_format(self):
         """verify inputs of log_tab, formats it"""
         if self.name_entry.get() == "":
@@ -259,9 +264,9 @@ class HealthExpo():
             else:
                 new_patient["appointment"] = 0
 
-            self.patients[new_patient["id"]] = new_patient
-            self.liner(new_patient, self.patient_num_assign)
             self.record(new_patient)
+            self.patients[self.patient_num_assign] = new_patient
+            self.liner(new_patient, self.patient_num_assign)
 
             # Counter on the UI
             self.patient_num_assign += 1
@@ -306,21 +311,38 @@ class HealthExpo():
     def stringify(self, num):
         return str(num)
 
-    def record(self, new_patient):
-        '''Puts patients in line, records information into csv'''
+    def intify(self, a_str):
+        return int(a_str)
+    
+    def save_changes(self, patients: dict, lines: list):
+        # save next index number
+        with open(os.path.join("Amherst", "Lines", "index.txt"), "w") as assign_index:
+            assign_index.write(str(self.patient_num_assign))
 
-        record_patients_data = pandas.read_csv(os.path.join("Amherst", "Databases", "record_patients.csv"))
-        new_data = pandas.DataFrame(new_patient, index=[0])
-        modified_data = pandas.concat([record_patients_data, new_data], ignore_index=True, join="inner")
-        modified_data.to_csv(os.path.join("Amherst", "Databases", "record_patients.csv"), index=False)
-
-        # add this information to the json file (WHY are we adding it to the JSON file?)
+        # put into json (to be accessed again for recovery)
         with open(os.path.join("Amherst", "Databases", "patients.json")) as file:
             data = json.load(file)
-        data.update(new_patient)
+        data.update(patients)
         with open(os.path.join("Amherst", "Databases", "patients.json"), 'w') as file:
-            json.dump(data, file, indent=4)
+            json.dump(data, file, indent=3)
 
+        # write to each service file
+        files = ["Dental", "Eye", "Foot_Massage", "Internal", "Oriental"]
+        for service in files:
+            with open(os.path.join("Amherst", "Databases", f"{service}.txt"), "w") as f:
+                f.write("\n".join(map(self.stringify, self.service_to_line_info[service][0])))
+
+    def record(self, new_patient):
+        '''Records information into csv'''
+        # put into csv
+        for_csv_patient = deepcopy(new_patient)
+        for k, v in for_csv_patient.items():
+            for_csv_patient[k] = [v] # listifying everything to put in csv
+
+        record_patients_data = pandas.read_csv(os.path.join("Amherst", "Databases", "record_patients.csv"))
+        new_data = pandas.DataFrame(for_csv_patient)
+        modified_data = pandas.concat([record_patients_data, new_data], ignore_index=True, join="inner")
+        modified_data.to_csv(os.path.join("Amherst", "Databases", "record_patients.csv"), index=False)
 
     def sort_the_lines(self):
         """looks at the lengths of each medical line. returns a list of smallest to largest"""
@@ -472,31 +494,19 @@ class HealthExpo():
 
     def recover(self):
         """Scrapes all the information from {service}.txt files, puts into lines (the lists)"""
-        services = ['Dental', "Eye", "Oriental", "Foot_Massage", "Internal"]
 
-        for service in services:
-            with open(os.path.join("Amherst", "Lines", f"{service}.txt")) as file:
-                patients_line = file.read()
-                patients_list = patients_line.split()
-                patients_str = '\n'.join(patients_list)
+        # load from json
+        with open(os.path.join("Amherst", "Databases", "patients.json")) as file:
+            self.patients = file.load(file)
 
-                # update the lists, update the text to be rendered
-                match service:
-                    case "Dental":
-                        self.dental_line_text.set(patients_str)
-                        self.dental_line = patients_list
-                    case "Eye":
-                        self.eye_line_text.set(patients_str)
-                        self.eye_line = patients_list
-                    case "Oriental":
-                        self.oriental_line_text.set(patients_str)
-                        self.oriental_line = patients_list
-                    case "Internal":
-                        self.internal_line_text.set(patients_str)
-                        self.internal_line = patients_list
-                    case "Foot_Massage":
-                        self.fm_line_text.set(patients_str)
-                        self.fm_line = patients_list
+        # load from individual lines
+        files = ["Dental", "Eye", "Foot_Massage", "Internal", "Oriental"]
+        for service in files:
+            with open(os.path.join("Amherst", "Databases", f"{service}.txt")) as f:
+                raw_data: list = f.read(f)
+                int_data = map(self.intify, raw_data.split("\n"))
+                self.service_to_line_info[service][0] = int_data
+                self.service_to_line_info[service][1].set(raw_data)
 
 if __name__=='__main__':
     HealthExpo()
