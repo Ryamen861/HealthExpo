@@ -8,14 +8,11 @@ Add error handling to line_window and when it comes to removing patients
     Get David to download the program on his machine
 Make finishing touches to UI, it does NOT look good, particularly the SC window, also kind of the Line window
 
-When we have multiple services at one time (like foot massage), we should use either color or boldness to show which ones are in
-
-
-eye || ahn-kkwah
+eye
 dental
-oriental
+oriental #
 internal medicine
-foot massage 3
+foot massage #
 
 ## Future Ideas?
 Tool to reset databases, index file, lines
