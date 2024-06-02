@@ -61,6 +61,7 @@ class HealthExpo():
         self.fm_checked = ctk.BooleanVar()
         self.internal_checked = ctk.BooleanVar()
         self.counter_tick_up = ctk.IntVar()
+        self.is_appointmented = ctk.BooleanVar()
 
         # These variables are for the Line Window
         self.dental_line_text = ctk.StringVar()
@@ -68,6 +69,15 @@ class HealthExpo():
         self.oriental_line_text = ctk.StringVar()
         self.internal_line_text = ctk.StringVar()
         self.fm_line_text = ctk.StringVar()
+
+        self.service_to_line_info = {
+            # string: [line, line_text]
+            "Dental": [self.dental_line, self.dental_line_text],
+            "Eye": [self.eye_line, self.eye_line_text],
+            "Oriental": [self.oriental_line, self.oriental_line_text],
+            "Internal": [self.internal_line, self.internal_line_text],
+            "Fm": [self.fm_line, self.fm_line_text]
+        }
 
         self.lines = [self.dental_line, self.eye_line, self.oriental_line, self.internal_line, self.fm_line]
         self.texts = [self.dental_line_text, self.eye_line_text, self.oriental_line_text, self.internal_line_text, self.fm_line_text]
@@ -97,6 +107,9 @@ class HealthExpo():
         self.internal_button.grid(column=2, row=1, sticky=W, padx=20, pady=10)
         self.fm_button = ctk.CTkCheckBox(master=log_tab, text="Foot Massage", variable=self.fm_checked, font=FONT)
         self.fm_button.grid(column=2, row=3, sticky=W, padx=20, pady=10)
+
+        self.appointment_button = ctk.CTkCheckBox(master=log_tab, text="Appointment", variable=self.is_appointmented, font=FONT)
+        self.appointment_button.grid(column=0, row=6)
 
         self.counter_label = ctk.CTkLabel(master=log_tab, text=self.patient_num_assign, font=BIG_FONT)
         self.counter_label.grid(column=1, row=6, pady=40)
@@ -241,6 +254,11 @@ class HealthExpo():
             else:   
                 new_patient["Fm"] = 0
 
+            if self.is_appointmented.get():
+                new_patient["appointment"] = 1
+            else:
+                new_patient["appointment"] = 0
+
             self.patients[new_patient["id"]] = new_patient
             self.liner(new_patient, self.patient_num_assign)
             self.record(new_patient)
@@ -254,54 +272,36 @@ class HealthExpo():
 
     def liner(self, new_patient, id):
         """Puts ID's in line"""
-        # I present to you, the ASBAL algorithsm
-        # stands for Add (new patient ID) Sort Back (sort everything after first ID) Add Lead (add the previously first ID at the front)
         sorted_services = self.sort_the_lines()
         for service in sorted_services:
+            line = self.service_to_line_info[service][0]
+            text = self.service_to_line_info[service][1]
             # service is a service in string form
             if new_patient[service] == 1:
-                match service:
-                    # case {service}:
-                    #   put id in line, sort it
-
-                    case "Dental":
-                        self.dental_line.append(id)
-                        sliced_list = self.dental_line[1::]
-                        sliced_list.sort()
-                        sliced_list.insert(0, self.dental_line[0])
-                        self.dental_line_text.set("\n".join(map(self.stringify, sliced_list)))
-                    case "Oriental":
-                        self.oriental_line.append(id)
-                        sliced_list = self.oriental_line[1::]
-                        sliced_list.sort()
-                        sliced_list.insert(0, self.oriental_line[0])
-                        self.oriental_line_text.set("\n".join(map(self.stringify, sliced_list)))
-
-                    case "Eye":
-                        self.eye_line.append(id)
-                        sliced_list = self.eye_line[1::]
-                        sliced_list.sort()
-                        sliced_list.insert(0, self.eye_line[0])
-                        self.eye_line_text.set("\n".join(map(self.stringify, sliced_list)))
-                    case "Internal":
-                        self.internal_line.append(id)
-                        sliced_list = self.internal_line[1::]
-                        sliced_list.sort()
-                        sliced_list.insert(0, self.internal_line[0])
-                        self.internal_line_text.set("\n".join(map(self.stringify, sliced_list)))
-
-                    case "Fm":
-                        self.fm_line.append(id)
-                        sliced_list = self.fm_line[1::]
-                        sliced_list.sort()
-                        sliced_list.insert(0, self.fm_line[0])
-                        self.fm_line_text.set("\n".join(map(self.stringify, sliced_list)))
+                # for appointments, they should go second all the time, no matter what
+                if new_patient["appointment"] == 1:
+                    # for loop through dictionary, until we find person who is NOT appointmented, then enter there
+                                                         
+                    if len(line) <= 1:
+                        line.append(id)
+                    else:
+                        line.insert(1, id)
+                    text.set("\n".join(map(self.stringify, line)))
+                # not for appointments
+                else:
+                    # I present to you, the ASBAL algorithsm
+                    # stands for Add (new patient ID) Sort Back (sort everything after first ID) Add Lead (add the previously first ID at the front)
+                    line.append(id)
+                    sliced_list = line[1::]
+                    sliced_list.sort()
+                    sliced_list.insert(0, line[0])
+                    text.set("\n".join(map(self.stringify, sliced_list)))
 
                 # mark that service so we don't run into it again in self.re_enter()
                 new_patient[service] = 0
                 break
             else:
-                print('found no match')  
+                print('found no match')
 
     def stringify(self, num):
         return str(num)
@@ -374,6 +374,10 @@ class HealthExpo():
         with open(os.path.join("Amherst", "Lines", "index.txt"), mode='w') as back_in_index:
             back_in_index.write(str(self.patient_num_assign))
 
+    def intercept():
+        """Used for people with appointments"""
+
+
     # def emergency_out(self):
     #     remove(index) from a service
 
@@ -382,7 +386,7 @@ class HealthExpo():
         '''takes the first one in a specified line out'''
 
         # authenticate confirm box was checked
-        if self.confirm_checked:
+        if self.confirm_checked.get():
             edit_line = self.line_to_be_edited.get()
 
             # authenticate ID typed in
