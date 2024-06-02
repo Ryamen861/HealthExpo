@@ -20,6 +20,8 @@ BIG_FONT = ("Helvetica", 55)
 MID_FONT = ("Helvetica", 32)
 LINE_FONT = ("Helvetica", 20)
 
+NUM_OF_FM_SERVERS = 2
+
 # for audio
 mixer.init()
 
@@ -61,14 +63,14 @@ class HealthExpo():
         self.counter_tick_up = ctk.IntVar()
 
         # These variables are for the Line Window
-        self.dent_line_text = ctk.StringVar()
+        self.dental_line_text = ctk.StringVar()
         self.eye_line_text = ctk.StringVar()
         self.oriental_line_text = ctk.StringVar()
         self.internal_line_text = ctk.StringVar()
         self.fm_line_text = ctk.StringVar()
 
         self.lines = [self.dental_line, self.eye_line, self.oriental_line, self.internal_line, self.fm_line]
-        self.texts = [self.dent_line_text, self.eye_line_text, self.oriental_line_text, self.internal_line_text, self.fm_line_text]
+        self.texts = [self.dental_line_text, self.eye_line_text, self.oriental_line_text, self.internal_line_text, self.fm_line_text]
  
         tabs = ctk.CTkTabview(master=self.home, width=700)
         tabs.grid()
@@ -118,7 +120,7 @@ class HealthExpo():
         self.confirm_button = ctk.CTkCheckBox(master=self.SC_tab, text="Confirm", variable=self.confirm_checked, font=FONT)
         self.confirm_button.grid(column=0, row=2, padx=(120, 30))
 
-        self.sc_submit_button = ctk.CTkButton(master=self.SC_tab, text="Submit", command=self.kick_out_plus_lw, font=FONT)
+        self.sc_submit_button = ctk.CTkButton(master=self.SC_tab, text="Submit", command=self.kick_out, font=FONT)
         self.sc_submit_button.grid(column=0, row=3, padx=(120, 30))
 
         self.sc_dental_button = ctk.CTkRadioButton(master=self.SC_tab, text="Dental", variable=self.line_to_be_edited, value='dental', font=FONT)
@@ -131,6 +133,8 @@ class HealthExpo():
         self.sc_internal_button.grid(column=3, row=1, padx=20, pady=20, sticky=W)
         self.sc_fm_buttom = ctk.CTkRadioButton(master=self.SC_tab, text="Foot Massage", variable=self.line_to_be_edited, value='fm', font=FONT)
         self.sc_fm_buttom.grid(column=3, row=0, padx=20, pady=20, sticky=W)
+
+        self.patients = {} # list of patients (type: dict)
 
         self.testing_bot()
 
@@ -146,11 +150,6 @@ class HealthExpo():
                                 'Brantley', 'Carter', 'Cam', 'Carly'])
 
         self.name_entry.insert(0, rand_name)
-
-    def kick_out_plus_lw(self):
-        self.kick_out()
-        self.deploy_line_window()
-
 
     def deploy_line_window(self):
             lw = ctk.CTkToplevel()
@@ -183,7 +182,7 @@ class HealthExpo():
                 img_label.grid(column=0, row=0, sticky=N)
 
             # TOP ROW
-            dental_line = ctk.CTkLabel(dental_scrollframe, textvariable=self.dent_line_text, font=MID_FONT)
+            dental_line = ctk.CTkLabel(dental_scrollframe, textvariable=self.dental_line_text, font=MID_FONT)
             dental_line.grid(column=1, row=0, sticky="N", padx=30)
 
             eye_line = ctk.CTkLabel(eye_scrollframe, textvariable=self.eye_line_text, font=MID_FONT)
@@ -242,10 +241,9 @@ class HealthExpo():
             else:   
                 new_patient["Fm"] = 0
 
+            self.patients[new_patient["id"]] = new_patient
             self.liner(new_patient, self.patient_num_assign)
             self.record(new_patient)
-            # update line window to have new patient included in lines
-            # self.deploy_line_window()
 
             # Counter on the UI
             self.patient_num_assign += 1
@@ -256,8 +254,9 @@ class HealthExpo():
 
     def liner(self, new_patient, id):
         """Puts ID's in line"""
+        # I present to you, the ASBAL algorithsm
+        # stands for Add (new patient ID) Sort Back (sort everything after first ID) Add Lead (add the previously first ID at the front)
         sorted_services = self.sort_the_lines()
-
         for service in sorted_services:
             # service is a service in string form
             if new_patient[service] == 1:
@@ -270,7 +269,7 @@ class HealthExpo():
                         sliced_list = self.dental_line[1::]
                         sliced_list.sort()
                         sliced_list.insert(0, self.dental_line[0])
-                        self.dent_line_text.set("\n".join(map(self.stringify, sliced_list)))
+                        self.dental_line_text.set("\n".join(map(self.stringify, sliced_list)))
                     case "Oriental":
                         self.oriental_line.append(id)
                         sliced_list = self.oriental_line[1::]
@@ -375,76 +374,97 @@ class HealthExpo():
         with open(os.path.join("Amherst", "Lines", "index.txt"), mode='w') as back_in_index:
             back_in_index.write(str(self.patient_num_assign))
 
+    # def emergency_out(self):
+    #     remove(index) from a service
+
 
     def kick_out(self):
         '''takes the first one in a specified line out'''
 
-        with open(os.path.join("Amherst", "Lines", f"{self.line_to_be_edited.get()}.txt")) as selected_file:
-            data = selected_file.read()
-            data = data.split()
+        # authenticate confirm box was checked
+        if self.confirm_checked:
+            edit_line = self.line_to_be_edited.get()
 
-        # check if user chose one service to take out of AND check if the number user typed in matches the first in line
-        if self.line_to_be_edited.get() != '' and self.to_be_SC_entry.get() == data[0]:
-
-            data.pop(0)
-
-            with open(os.path.join("Amherst", "Lines", f"{self.line_to_be_edited.get()}.txt"), 'w') as update_file:
-                ready_to_write = ' '.join(data) + ' '
-                update_file.write(ready_to_write)
-
-            self.re_enter(int(self.to_be_SC_entry.get()))
-
-            mixer.music.load(os.path.join("Amherst", "Assets", "notification_sound2.mp3"))
-            mixer.music.play(loops=0)
-
-        else:
-            messagebox.showwarning(title="Oops", message="It looks like you either:\ndid not choose a service to edit"
-                                                        "\nor\nthe number typed in does not match the first in line!")
-
-
-    def re_enter(self, patient_num):
-        """places the patient num back into another line"""
-
-        with open(os.path.join("Amherst", "Databases", "patients.json")) as file:
-            patients = json.load(file)
-
-        patient = patients[str(patient_num)]
-
-        sorted_services = self.sort_the_lines()
-        print(patient)
-
-        check_if_finished_three = 0
-
-        for service in sorted_services:
-            if service in patient:
-                print(f"we found it,{service}, second in that line now")
-                with open(os.path.join("Amherst", "Lines", f"{service}.txt")) as file:
-                    contents = file.read()
-                    xlist = contents.split()
-                    xlist.append(str(patient_num))
-
-                    sliced_list = xlist[1::]
-                    sliced_list.sort()
-                    sliced_list.insert(0, xlist[0])
-
-                with open(os.path.join("Amherst", "Lines", f"{service}.txt"), 'w') as file:
-                    ready_to_go = ' '.join(sliced_list) + ' '
-                    file.write(ready_to_go)
-
-                the_service_index = patient.index(service)
-                patient[the_service_index] = service + 'x'
-
-                # now that we've marked the service as done with an x, we will now update the patients.json
-                with open(os.path.join("Amherst", "Databases", "patients.json"), 'w') as file:
-                    patients[str(patient_num)] = patient
-                    json.dump(patients, file, indent=4)
-                break
+            # authenticate ID typed in
+            try:
+                entry_ID = int(self.to_be_SC_entry.get())
+            except ValueError:
+                messagebox.showwarning(title="Number Entry", message="Looks like you have put a letter in the number box where you type in the id. It should not have a letter, only numbers.")
             else:
-                check_if_finished_three += 1
+                # authenticate (not really, just make sure they chose a line) the line
+                if edit_line not in ["dental", "eye", "oriental", "internal", "fm"]:
+                    messagebox.showwarning(title="Choose a line", message="It looks like you did not choose a line to take out of.")
+                else:
+                    show_warning = False
+                    match edit_line:
+                        case "dental":
+                            if len(self.dental_line) > 0:
+                                if entry_ID == self.dental_line[0]:
+                                    del self.dental_line[0]
+                                else:
+                                    show_warning = True
+                            else:
+                                show_warning = True
+                        case "oriental":
+                            if len(self.oriental_line) > 0:
+                                if entry_ID == self.oriental_line[0]:
+                                    del self.oriental_line[0]
+                                else:
+                                    show_warning = True
+                            else:
+                                show_warning = True
+                        case "eye":
+                            if len(self.eye_line) > 0:
+                                if entry_ID == self.eye_line[0]:
+                                    del self.eye_line[0]
+                                else:
+                                    show_warning = True
+                            else:
+                                show_warning = True
+                        case "internal":
+                            if len(self.internal_line) > 0:
+                                if entry_ID == self.internal_line[0]:
+                                    del self.internal_line[0]
+                                else:
+                                    show_warning = True
+                            else:
+                                show_warning = True
+                        case "fm":
+                            if len(self.fm_line) > 0:
+                                found_ID = False
+                                # since this one has multiple servers
+                                for i in range(0, NUM_OF_FM_SERVERS):
+                                    if entry_ID == self.fm_line[i]:
+                                        del self.fm_line[i]
+                                        found_ID = True
+                                show_warning = not found_ID
+                            else:
+                                show_warning = True
+                    
+                    if show_warning:
+                        messagebox.showwarning(title="Number match", message="Looks like the ID you put in does not match the first ID in the line you chose.")
+                    else:
+                        print("__________________ We made it ______________")
+                        
+                        # re-render the line where ID was taken OUT of
+                        match edit_line:
+                            case "dental":
+                                self.dental_line_text.set("\n".join(map(self.stringify, self.dental_line)))
+                            case "eye":
+                                self.eye_line_text.set("\n".join(map(self.stringify, self.eye_line)))
+                            case "oriental":
+                                self.oriental_line_text.set("\n".join(map(self.stringify, self.oriental_line)))
+                            case "internal":
+                                self.internal_line_text.set("\n".join(map(self.stringify, self.internal_line)))
+                            case "fm":
+                                self.fm_line_text.set("\n".join(map(self.stringify, self.fm_line)))
 
-        # if check_if_finished_three == 3:
-        #     print(f"This patient is finished -> {patient}")
+                        self.liner(self.patients[entry_ID], entry_ID)
 
+                        mixer.music.load(os.path.join("Amherst", "Assets", "notification_sound2.mp3"))
+                        mixer.music.play(loops=0)
+        else:
+            messagebox.showwarning(title="Confirm Your Choice", message="Please check the confirm button to confirm your removal.")
 
     def recover(self):
         """Scrapes all the information from {service}.txt files, puts into lines (the lists)"""
@@ -459,7 +479,7 @@ class HealthExpo():
                 # update the lists, update the text to be rendered
                 match service:
                     case "Dental":
-                        self.dent_line_text.set(patients_str)
+                        self.dental_line_text.set(patients_str)
                         self.dental_line = patients_list
                     case "Eye":
                         self.eye_line_text.set(patients_str)
