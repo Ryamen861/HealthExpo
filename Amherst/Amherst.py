@@ -23,6 +23,7 @@ LINE_FONT = ("Helvetica", 20)
 INSTR_FONT = ("Helvetica", 15)
 
 NUM_OF_FM_SERVERS = 2
+NUM_OF_ORIENTAL_SERVERS = 2
 
 # for audio
 mixer.init()
@@ -305,18 +306,26 @@ class HealthExpo():
             text = self.service_to_line_info[service][1]
             # service is a service in string form
             if new_patient[service] == 1:
-                # for appointments, they should go second all the time, no matter what
+                # for appointments, they should be first on queue all the time, no matter what
                 if new_patient["appointment"] == 1:
                     # for loop through dictionary, until we find person who is NOT appointmented, then enter there
-                    if len(line) <= 1:
-                        line.append(id)
-                    else:
-                        line.insert(1, id)
-
-                    if service != "Fm":
+                    
+                    if service != "Fm" and service != "Oriental":
+                        if len(line) <= 1:
+                            line.append(id)
+                        else:
+                            line.insert(1, id)
                         text.set("\n".join(map(self.stringify, line)))
                     else:
-                        self.render_fm()
+                        if len(line) <= 1:
+                            line.append(id)
+                        else:
+                            if service == "Fm":
+                                line.insert(NUM_OF_FM_SERVERS, id)
+                                self.render_fm()
+                            elif service == "Oriental":
+                                line.insert(NUM_OF_ORIENTAL_SERVERS, id)
+                                self.render_o()
                 # not for appointments
                 else:
                     # I present to you, the ASBAL algorithsm
@@ -325,11 +334,22 @@ class HealthExpo():
                     sliced_list = line[1::]
                     sliced_list.sort()
                     sliced_list.insert(0, line[0])
-                    if service != "Fm":
-                        text.set("\n".join(map(self.stringify, sliced_list)))
+                    if service != "Fm" and service != "Oriental":
+                        if len(line) <= 1:
+                            line.append(id)
+                        else:
+                            line.insert(1, id)
+                        text.set("\n".join(map(self.stringify, line)))
                     else:
-                        self.render_fm()
-
+                        if len(line) <= 1:
+                            line.append(id)
+                        else:
+                            if service == "Fm":
+                                line.insert(NUM_OF_FM_SERVERS, id)
+                                self.render_fm()
+                            elif service == "Oriental":
+                                line.insert(NUM_OF_ORIENTAL_SERVERS, id)
+                                self.render_o()
                 # mark that service so we don't place them there again
                 new_patient[service] = 0
                 break
@@ -352,6 +372,17 @@ class HealthExpo():
             else:
                 final_text += f"\n{self.fm_line[i]}"
         self.fm_line_text.set(final_text)
+
+    def render_o(self):
+        final_text = ""
+        for i in range(0, len(self.oriental_line)):
+            if i == NUM_OF_ORIENTAL_SERVERS:
+                final_text += f"\n\n{self.oriental_line[i]}"
+            elif i == 0:
+                final_text += f"{self.oriental_line[i]}"
+            else:
+                final_text += f"\n{self.oriental_line[i]}"
+        self.oriental_line_text.set(final_text)
 
     def save_changes(self, patients: dict, lines: list):
         # save next index number
@@ -511,7 +542,7 @@ class HealthExpo():
                             case "eye":
                                 self.eye_line_text.set("\n".join(map(self.stringify, self.eye_line)))
                             case "oriental":
-                                self.oriental_line_text.set("\n".join(map(self.stringify, self.oriental_line)))
+                                self.render_o()
                             case "internal":
                                 self.internal_line_text.set("\n".join(map(self.stringify, self.internal_line)))
                             case "fm":
@@ -557,7 +588,7 @@ class HealthExpo():
                             self.internal_line_text.set(raw_data)
                         case "Oriental":
                             self.oriental_line = int_list
-                            self.oriental_line_text.set(raw_data)
+                            self.render_o()
 
 if __name__=='__main__':
     HealthExpo()
