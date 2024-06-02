@@ -20,6 +20,7 @@ FONT = ("Helvetica", 16)
 BIG_FONT = ("Helvetica", 55)
 MID_FONT = ("Helvetica", 32)
 LINE_FONT = ("Helvetica", 20)
+INSTR_FONT = ("Helvetica", 15)
 
 NUM_OF_FM_SERVERS = 2
 
@@ -155,6 +156,7 @@ class HealthExpo():
         self.sc_fm_buttom.grid(column=3, row=0, padx=20, pady=20, sticky=W)
 
         self.testing_bot()
+        # self.home.after(2000, self.scan_plugin)
         self.home.mainloop()
         
         self.save_changes(self.patients, self.lines)
@@ -169,6 +171,23 @@ class HealthExpo():
                                 'Brantley', 'Carter', 'Cam', 'Carly'])
 
         self.name_entry.insert(0, rand_name)
+
+    # def scan_plugin(self):
+    #     with open(os.path.join("Amherst", "plugin.txt")) as file:
+    #         ids = [int(i.strip()) for i in file.readlines()]
+    #         for to_be_kicked in ids:
+    #             print("Lets boot")
+    #             self.seek_kick(to_be_kicked)
+    #     self.home.after(2000, self.scan_plugin)
+
+    # def seek_kick(self, to_be_kicked):
+    #     for line in self.lines:
+    #         for id in line:
+    #             if id == to_be_kicked:
+    #                 line.remove(id)
+    #                 self.liner(self.patients[id], id)
+    #                 print('kicked')
+    #                 break
 
     def deploy_line_window(self):
             lw = ctk.CTkToplevel()
@@ -186,6 +205,9 @@ class HealthExpo():
             internal_scrollframe.grid(column=0, row=1, padx=20, pady=20)
             fm_scrollframe = ctk.CTkScrollableFrame(lw, width=180, height=250, label_text="Foot Massage", label_font=LINE_FONT)
             fm_scrollframe.grid(column=1, row=1, padx=20, pady=20)
+
+            instructions = ctk.CTkLabel(master=lw, text="1. First in line should head\n to the designated office.\n2. Once finished, find a scanner\n3. A ringtone will signify\na change to the lines", font=INSTR_FONT)
+            instructions.grid(column=2, row=1, padx=8, pady=8, sticky="W")
 
             my_img_files = ["dental.png", "eye.png", "oriental.png", "internal.png", "foot.png"]
             my_scrollframes = [dental_scrollframe, eye_scrollframe, oriental_scrollframe, internal_scrollframe, fm_scrollframe]
@@ -286,12 +308,15 @@ class HealthExpo():
                 # for appointments, they should go second all the time, no matter what
                 if new_patient["appointment"] == 1:
                     # for loop through dictionary, until we find person who is NOT appointmented, then enter there
-                                                         
                     if len(line) <= 1:
                         line.append(id)
                     else:
                         line.insert(1, id)
-                    text.set("\n".join(map(self.stringify, line)))
+
+                    if service != "Fm":
+                        text.set("\n".join(map(self.stringify, line)))
+                    else:
+                        self.render_fm()
                 # not for appointments
                 else:
                     # I present to you, the ASBAL algorithsm
@@ -300,9 +325,12 @@ class HealthExpo():
                     sliced_list = line[1::]
                     sliced_list.sort()
                     sliced_list.insert(0, line[0])
-                    text.set("\n".join(map(self.stringify, sliced_list)))
+                    if service != "Fm":
+                        text.set("\n".join(map(self.stringify, sliced_list)))
+                    else:
+                        self.render_fm()
 
-                # mark that service so we don't run into it again in self.re_enter()
+                # mark that service so we don't place them there again
                 new_patient[service] = 0
                 break
             else:
@@ -314,6 +342,17 @@ class HealthExpo():
     def intify(self, a_str):
         return int(a_str)
     
+    def render_fm(self):
+        final_text = ""
+        for i in range(0, len(self.fm_line)):
+            if i == NUM_OF_FM_SERVERS:
+                final_text += f"\n\n{self.fm_line[i]}"
+            elif i == 0:
+                final_text += f"{self.fm_line[i]}"
+            else:
+                final_text += f"\n{self.fm_line[i]}"
+        self.fm_line_text.set(final_text)
+
     def save_changes(self, patients: dict, lines: list):
         # save next index number
         with open(os.path.join("Amherst", "Lines", "index.txt"), "w") as assign_index:
@@ -476,7 +515,7 @@ class HealthExpo():
                             case "internal":
                                 self.internal_line_text.set("\n".join(map(self.stringify, self.internal_line)))
                             case "fm":
-                                self.fm_line_text.set("\n".join(map(self.stringify, self.fm_line)))
+                                self.render_fm()
 
                         self.liner(self.patients[entry_ID], entry_ID)
 
@@ -512,7 +551,7 @@ class HealthExpo():
                             self.eye_line_text.set(raw_data)
                         case "Fm":
                             self.fm_line = int_list
-                            self.fm_line_text.set(raw_data)
+                            self.render_fm()
                         case "Internal":
                             self.internal_line = int_list
                             self.internal_line_text.set(raw_data)
