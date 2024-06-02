@@ -30,7 +30,6 @@ the_key = "key"
 
 class HealthExpo():
     def __init__(self):
-        self.recover()
         self.first_time = True
         with open(os.path.join("Amherst", "Lines", "index.txt")) as assign_index:
             self.patient_num_assign = int(assign_index.read())
@@ -71,6 +70,12 @@ class HealthExpo():
         self.oriental_line_text = ctk.StringVar()
         self.internal_line_text = ctk.StringVar()
         self.fm_line_text = ctk.StringVar()
+
+        self.patients = {
+            # dict of patients
+        }
+
+        self.recover()
 
         self.service_to_line_info = {
             # string: [line, line_text]
@@ -149,12 +154,7 @@ class HealthExpo():
         self.sc_fm_buttom = ctk.CTkRadioButton(master=self.SC_tab, text="Foot Massage", variable=self.line_to_be_edited, value='fm', font=FONT)
         self.sc_fm_buttom.grid(column=3, row=0, padx=20, pady=20, sticky=W)
 
-        self.patients = {
-            # dict of patients
-        }
-
         self.testing_bot()
-
         self.home.mainloop()
         
         self.save_changes(self.patients, self.lines)
@@ -327,9 +327,9 @@ class HealthExpo():
             json.dump(data, file, indent=3)
 
         # write to each service file
-        files = ["Dental", "Eye", "Foot_Massage", "Internal", "Oriental"]
+        files = ["Dental", "Eye", "Fm", "Internal", "Oriental"]
         for service in files:
-            with open(os.path.join("Amherst", "Databases", f"{service}.txt"), "w") as f:
+            with open(os.path.join("Amherst", "Lines", f"{service}.txt"), "w") as f:
                 f.write("\n".join(map(self.stringify, self.service_to_line_info[service][0])))
 
     def record(self, new_patient):
@@ -388,13 +388,6 @@ class HealthExpo():
         # for the SC
         self.confirm_button.deselect()
         self.to_be_SC_entry.delete(0, END)
-
-
-    def tick_counter(self):
-        
-
-        with open(os.path.join("Amherst", "Lines", "index.txt"), mode='w') as back_in_index:
-            back_in_index.write(str(self.patient_num_assign))
 
     def intercept():
         """Used for people with appointments"""
@@ -494,19 +487,38 @@ class HealthExpo():
 
     def recover(self):
         """Scrapes all the information from {service}.txt files, puts into lines (the lists)"""
-
+        print("I'm recovering")
         # load from json
         with open(os.path.join("Amherst", "Databases", "patients.json")) as file:
-            self.patients = file.load(file)
+            raw_dict = json.load(file)
+            for k, v in raw_dict.items():
+                self.patients[int(k)] = v
 
         # load from individual lines
-        files = ["Dental", "Eye", "Foot_Massage", "Internal", "Oriental"]
+        files = ["Dental", "Eye", "Fm", "Internal", "Oriental"]
         for service in files:
-            with open(os.path.join("Amherst", "Databases", f"{service}.txt")) as f:
-                raw_data: list = f.read(f)
-                int_data = map(self.intify, raw_data.split("\n"))
-                self.service_to_line_info[service][0] = int_data
-                self.service_to_line_info[service][1].set(raw_data)
+            with open(os.path.join("Amherst", "Lines", f"{service}.txt")) as f:
+                raw_data = f.read()
+                print(raw_data.split("\n"))
+                if raw_data != "":
+                    int_list = list(map(self.intify, raw_data.split("\n")))
+
+                    match service:
+                        case "Dental":
+                            self.dental_line = int_list
+                            self.dental_line_text.set(raw_data)
+                        case "Eye":
+                            self.eye_line = int_list
+                            self.eye_line_text.set(raw_data)
+                        case "Fm":
+                            self.fm_line = int_list
+                            self.fm_line_text.set(raw_data)
+                        case "Internal":
+                            self.internal_line = int_list
+                            self.internal_line_text.set(raw_data)
+                        case "Oriental":
+                            self.oriental_line = int_list
+                            self.oriental_line_text.set(raw_data)
 
 if __name__=='__main__':
     HealthExpo()
