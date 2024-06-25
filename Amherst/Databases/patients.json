@@ -1,1 +1,12 @@
-{}
+{
+   "0": {
+      "id": 0,
+      "name": "dummyPatient",
+      "Dental": 1,
+      "Eye": 1,
+      "Oriental": 0,
+      "Internal": 0,
+      "Fm": 1,
+      "appointment": 0
+   }
+}

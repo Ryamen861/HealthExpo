@@ -181,15 +181,35 @@ class HealthExpo():
 
     def reset(self):
         if messagebox.askquestion("Resetting Data", "Do you really want to reset this session's patient data?"):
-            for filename in os.listdir("Lines"):
-                with open(filename) as file:
-                    if filename == "index.txt":
-                        file.write("101")
-                    else:
-                        file.write("")
+            for filename in ["Eye.txt", "Dental.txt", "Fm.txt", "Internal.txt", "Oriental.txt"]:
+                open(os.path.join("Amherst", "Lines", filename), "w").close()
+            with open(os.path.join("Amherst", "Lines","index.txt"), "w") as file:
+                file.write("101")
 
-        with open(os.path.join("Amherst", "Databases", "patients.json")) as file:
-            json.dump({})
+            # PROBLEM WITH OS.LISTDIR    
+            # for filename in os.listdir(os.path.join("Amherst", "Lines")):
+            #     print("here we go")
+            #     print(filename)
+            # for filename in os.listdir(os.path.join("Amherst", "Lines")):
+            #     with open(filename) as file:
+            #         if filename == "index.txt":
+            #             file.write("101")
+            #         else:
+            #             file.write("")
+
+        with open(os.path.join("Amherst", "Databases", "patients.json"), "w") as file:
+            json.dump({
+            "0": {
+                "id": 0,
+                "name": "dummyPatient",
+                "Dental": 1,
+                "Eye": 1,
+                "Oriental": 0,
+                "Internal": 0,
+                "Fm": 1,
+                "appointment": 0
+            }
+            }, file)
 
         # won't clear csv data, since that is for the record, not the program
 
