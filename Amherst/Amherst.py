@@ -22,7 +22,7 @@ MID_FONT = ("Helvetica", 32)
 LINE_FONT = ("Helvetica", 20)
 INSTR_FONT = ("Helvetica", 15)
 
-NUM_OF_FM_SERVERS = 2
+NUM_OF_FM_SERVERS = 4
 
 # for audio
 mixer.init()
@@ -94,6 +94,7 @@ class HealthExpo():
         tabs.grid()
         tabs.add("Log")
         tabs.add("Status Change")
+        tabs.add("Reset")
         tabs.set("Log")
         log_tab = tabs.tab("Log")
 
@@ -155,6 +156,11 @@ class HealthExpo():
         self.sc_fm_buttom = ctk.CTkRadioButton(master=self.SC_tab, text="Foot Massage", variable=self.line_to_be_edited, value='fm', font=FONT)
         self.sc_fm_buttom.grid(column=3, row=0, padx=20, pady=20, sticky=W)
 
+        ################ for reset tab ############### 
+        self.reset_tab = tabs.tab("Reset")
+        self.reset_button = ctk.CTkButton(self.reset_tab, text="RESET", command=self.reset, font=FONT)
+        self.reset_button.grid(column=0, row=0)   # intentionally put in corner to prevent mistake clicks
+
         self.testing_bot()
         # self.home.after(2000, self.scan_plugin)
         self.home.mainloop()
@@ -171,6 +177,28 @@ class HealthExpo():
                                 'Brantley', 'Carter', 'Cam', 'Carly'])
 
         self.name_entry.insert(0, rand_name)
+
+
+    def reset(self):
+        if messagebox.askquestion("Resetting Data", "Do you really want to reset this session's patient data?"):
+            for filename in os.listdir("Lines"):
+                with open(filename) as file:
+                    if filename == "index.txt":
+                        file.write("101")
+                    else:
+                        file.write("")
+
+        with open(os.path.join("Amherst", "Databases", "patients.json")) as file:
+            json.dump({})
+
+        # won't clear csv data, since that is for the record, not the program
+
+        self.dental_line.clear()
+        self.oriental_line.clear()
+        self.eye_line.clear()
+        self.fm_line.clear()
+        self.internal_line.clear()
+        self.patients.clear()
 
     # def scan_plugin(self):
     #     with open(os.path.join("Amherst", "plugin.txt")) as file:
@@ -206,7 +234,7 @@ class HealthExpo():
             fm_scrollframe = ctk.CTkScrollableFrame(lw, width=200, height=250, label_text="Foot Massage/발마사지", label_font=LINE_FONT)
             fm_scrollframe.grid(column=1, row=1, padx=20, pady=20)
 
-            instructions = ctk.CTkLabel(master=lw, text="1. First in line should head\n to the designated office.\n2. Once finished, find a scanner\n3. A ringtone will signify\na change to the lines", font=INSTR_FONT)
+            instructions = ctk.CTkLabel(master=lw, text="1. First in line should head\n to the designated office.\n2. Once finished, come to the signup desk\n3. A ringtone will signify\na change to the lines", font=INSTR_FONT)
             instructions.grid(column=2, row=1, padx=8, pady=8, sticky="W")
 
             my_img_files = ["dental.png", "eye.png", "oriental.png", "internal.png", "foot.png"]
@@ -346,11 +374,9 @@ class HealthExpo():
         final_text = ""
         for i in range(0, len(self.fm_line)):
             if i == NUM_OF_FM_SERVERS:
-                final_text += f"\n\n{self.fm_line[i]}"
-            elif i == 0:
-                final_text += f"{self.fm_line[i]}"
-            else:
                 final_text += f"\n{self.fm_line[i]}"
+            else:
+                final_text += f"{self.fm_line[i]}\n"
         self.fm_line_text.set(final_text)
 
     def save_changes(self, patients: dict, lines: list):
@@ -428,9 +454,10 @@ class HealthExpo():
         self.confirm_button.deselect()
         self.to_be_SC_entry.delete(0, END)
 
-    def intercept():
-        """Used for people with appointments"""
 
+############## UPDATES FOR NEXT YEAR #################
+    # def intercept():
+    #     """Used for people with appointments"""
 
     # def emergency_out(self):
     #     remove(index) from a service
@@ -438,8 +465,6 @@ class HealthExpo():
 
     def kick_out(self):
         '''takes the first one in a specified line out'''
-
-        # authenticate confirm box was checked
         if self.confirm_checked.get():
             edit_line = self.line_to_be_edited.get()
 
@@ -449,58 +474,40 @@ class HealthExpo():
             except ValueError:
                 messagebox.showwarning(title="Number Entry", message="Looks like you have put a letter in the number box where you type in the id. It should not have a letter, only numbers.")
             else:
-                # authenticate (not really, just make sure they chose a line) the line
+                # just make sure they chose a line
                 if edit_line not in ["dental", "eye", "oriental", "internal", "fm"]:
                     messagebox.showwarning(title="Choose a line", message="It looks like you did not choose a line to take out of.")
                 else:
                     show_warning = False
                     match edit_line:
                         case "dental":
-                            if len(self.dental_line) > 0:
-                                if entry_ID == self.dental_line[0]:
-                                    del self.dental_line[0]
-                                else:
+                            if len(self.dental_line) == 0 or entry_ID != self.dental_line[0]:
                                     show_warning = True
                             else:
-                                show_warning = True
+                                del self.dental_line[0]
                         case "oriental":
-                            if len(self.oriental_line) > 0:
-                                if entry_ID == self.oriental_line[0]:
-                                    del self.oriental_line[0]
-                                else:
+                            if len(self.oriental_line) == 0 or entry_ID != self.oriental_line[0]:
                                     show_warning = True
                             else:
-                                show_warning = True
+                                del self.oriental_line[0]
                         case "eye":
-                            if len(self.eye_line) > 0:
-                                if entry_ID == self.eye_line[0]:
-                                    del self.eye_line[0]
-                                else:
+                            if len(self.eye_line) == 0 or entry_ID != self.eye_line[0]:
                                     show_warning = True
                             else:
-                                show_warning = True
+                                del self.eye_line[0]
                         case "internal":
-                            if len(self.internal_line) > 0:
-                                if entry_ID == self.internal_line[0]:
-                                    del self.internal_line[0]
-                                else:
+                            if len(self.internal_line) == 0 or entry_ID != self.internal_line[0]:
                                     show_warning = True
                             else:
-                                show_warning = True
+                                del self.internal_line[0]
                         case "fm":
-                            if len(self.fm_line) > 0:
-                                found_ID = False
-                                # since this one has multiple servers
-                                for i in range(0, NUM_OF_FM_SERVERS):
-                                    if entry_ID == self.fm_line[i]:
-                                        del self.fm_line[i]
-                                        found_ID = True
-                                show_warning = not found_ID
-                            else:
+                            if len(self.fm_line) == 0 or entry_ID not in self.fm_line:
                                 show_warning = True
-                    
+                            else:
+                                self.fm_line.remove(entry_ID)
+                                
                     if show_warning:
-                        messagebox.showwarning(title="Number match", message="Looks like the ID you put in does not match the first ID in the line you chose.")
+                        messagebox.showwarning(title="Number match", message="Either:\n     The ID you put in does not match the first ID in the line you chose\n     The line you chose is empty")
                     else:
                         print("__________________ We made it ______________")
                         
