@@ -183,8 +183,9 @@ class HealthExpo():
         if messagebox.askquestion("Resetting Data", "Do you really want to reset this session's patient data?"):
             for filename in ["Eye.txt", "Dental.txt", "Fm.txt", "Internal.txt", "Oriental.txt"]:
                 open(os.path.join("Amherst", "Lines", filename), "w").close()
-            with open(os.path.join("Amherst", "Lines","index.txt"), "w") as file:
-                file.write("101")
+            
+            self.patient_num_assign = 101
+            self.counter_label.configure(text=self.patient_num_assign)
 
             # PROBLEM WITH OS.LISTDIR    
             # for filename in os.listdir(os.path.join("Amherst", "Lines")):
@@ -214,10 +215,16 @@ class HealthExpo():
         # won't clear csv data, since that is for the record, not the program
 
         self.dental_line.clear()
+        self.dental_line_text.set("")
         self.oriental_line.clear()
+        self.oriental_line_text.set("")
         self.eye_line.clear()
+        self.eye_line_text.set("")
         self.fm_line.clear()
+        self.fm_line_text.set("")
         self.internal_line.clear()
+        self.internal_line_text.set("")
+
         self.patients.clear()
 
     # def scan_plugin(self):
@@ -355,7 +362,7 @@ class HealthExpo():
             if new_patient[service] == 1:
                 # for appointments, they should go second all the time, no matter what
                 if new_patient["appointment"] == 1:
-                    # for loop through dictionary, until we find person who is NOT appointmented, then enter there
+                    ####### for loop through dictionary, until we find person who is NOT appointmented, then enter there
                     if len(line) <= 1:
                         line.append(id)
                     else:
